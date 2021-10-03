@@ -131,3 +131,6 @@ dmypy.json
 # Parser stuff
 parser.out
 parsetab.py
+
+# not yet
+semanticCube.py

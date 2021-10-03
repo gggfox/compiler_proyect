@@ -153,8 +153,9 @@ def t_ID(t):
     if reserved_type:
         t.type = reserved_type
         return t
-    t.value = 'ID'
-    return t
+    else:
+        t.type = 'ID'
+        return t
 
 def t_CTE_FLOAT(t):
     r'-?\d+\.\d+'
@@ -186,20 +187,22 @@ def t_error(t):
     t.lexer.skip(1)
 
 
+# build the lexer
 lexer = lex.lex()
-
-# Test it out
-test = """program Luffy; {
-    "Strawhat" = 22 isnt 5.3 and length('ass') is 1 and not true or mode([5,5,5,5]) isnt 5;
-    }"""
-
-# Give the lexer some input
-lexer.input(test)
 
 # Tokenize
 if __name__ == "__main__":
+    code = ""
+    file = open("Test/test.alebrije", "r")
+    for line in file:
+        code += line
+
+    # Give the lexer some input
+    lexer.input(code)
+
     while True:
         tok = lexer.token()
         if not tok:
             break  # No more input
         print(tok)
+
