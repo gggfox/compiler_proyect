@@ -1,0 +1,17 @@
+program Simple; { }
+program Vars; sunny1000 Ship : 431.12; { }
+program Vars; eustas Kid, Killer : 123.25; { }
+program Asignacion; { Zoro = 412; }
+program Asignacion; { Luffy = 11 < 3.3; }
+program Asignacion; { Usopp = 11 <> 11 }
+program Expresion; Bege : 11; { Capone = 3 * 3 }
+program Expresion; Big : 44; { Mom = 4 - 2 + 6 }
+program Expresion; { Kaido = 55 / 5 * 10 }
+program Expresion; Law : 22; { Traglafar = 2 + 3 + 4 - 5 * 5 * 8; }
+program Condicion; { if (4 > 2){ Germa = 66; } }
+program Condicion; { if (Nami){ Chopper = 4.6; }else{ Sanji = 43; }; }
+program Escritura; { print("strawhat"); }
+program Escritura; { print("enies", "loby"); }
+program Escritura; { print("fish", Man); }
+program Escritura: { print(Robin, Brook); }
+program Escritura; { print(Franky, Jimbei); }
