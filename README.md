@@ -1,10 +1,18 @@
 # compiler_proyect
+definir pilas
+key factor: trabajar sobre mi gramatica y ahi ir metiendo los puntos neuralgicos
+## Avanze de la semana
+puse algunos de los puntos neuralogicos,
+puse los operadores en orden, pero me faltaron los operandos,
+agregue una funcion en mi estructura de datos para ver el tipo de dato de una variable
+me falto aplicar los cuadroplos de manera completa y los goto
 
 ## Archivos relevantes:
 - lexer.py
 - parser.py
-- Avanze1-Gerardo-Galan.pdf
 - procedure_dir.py
+- semanticCube.py
+
 ## Semana #1 (Sep27-Oct01)
 -[X] diagramas de sintaxis
 -[X] gramatica formal
@@ -17,10 +25,9 @@
 -[X] Semantica Basica de Expresiones: Tabla de consideraciones semanticas (cubo semantico)
 
 ## Semana #3(Oct11-Oct15)
-
 -[ ] Generacion de Codigo de Expresiones Aritmeticas
 -[ ] Generacion de Codigo Estatutos secuenciales(Asignacion, lectura, etc...)
--[ ] Generacion de Codigo de Estatutos Estatutos Condicionales: Decisiones
+-[X] Generacion de Codigo de Estatutos Estatutos Condicionales: Decisiones
 
 ## Semana #4(Oct18-Oct22)
 -[ ] Generacion de Codigo de Estatutos Condicionales: Ciclos

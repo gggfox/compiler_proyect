@@ -1,0 +1,13 @@
+program MyRlike; 
+
+main(){
+    vars {
+        int: a,b,c,d;
+    }
+    if(A + B > C * D) then {
+        A = B + D;
+    }else{
+        A = D - C;
+    }
+    B = A * C + D;
+}

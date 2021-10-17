@@ -5,7 +5,7 @@
 #                           #
 #   procedure_dir.py        #
 #   Created_at 2021-09-28   #
-#   Updated_at 2021-10-02   #
+#   Updated_at 2021-10-09   #
 #############################
 ''' 
 
@@ -13,9 +13,19 @@ from tabulate import tabulate
 
 class procedure_dir():
     def __init__(self):
-        self.curr_scope = "global"
+        self.curr_proc = ""
+        self.curr_quadruple = 0
+        self.curr_datatype = ""
         self.procedures = {}
         self.variable_stack = []
+
+    def get_curr_quadruple(self) -> int:
+        self.curr_quadruple += 1
+        return self.curr_quadruple
+
+    def set_curr_proc(self, proc_name: str, proc_datatype:str = "void") -> None:
+        self.curr_proc = proc_name
+        self.add_procedure(proc_name,proc_datatype)
 
     def print_procedure_directory(self):
         header = ["name", "datatype", "# vars"]
@@ -37,35 +47,31 @@ class procedure_dir():
                 datatype = procs[proc_name]["var_table"][var_name]["datatype"]
                 scope = procs[proc_name]["var_table"][var_name]["scope"]
                 data.append([var_name,datatype,scope,proc_name])
-        print("_"*15,"VARIABLE TABLE")
+        print(" "*15,"VARIABLE TABLE")
         print(tabulate(data, headers=header, tablefmt="fancy_grid"),"\n")
     """
     This function is used to collect varibales(name, datatype, scope) in a
     stack that gets emptied when a new procedure is added to the object
 
     """    
-    def add_variable(self, var_name:str, var_datatype:str):
+    def add_variable(self, var_name:str):
         if self.exist_global_var(var_name):
             return "Error a global variable with that name alredy exists"
-        self.variable_stack.append((var_name, var_datatype, self.curr_scope))
-    
+        [scope] = ["global" if self.curr_proc == "program" else "local"]
+        data = {
+            "datatype":self.curr_datatype, 
+            "scope": scope
+        }
+        self.procedures[self.curr_proc]["var_table"][var_name] = data
+
+    """
+    This function adds a new procedure to the procedure directory
+    """
     def add_procedure(self, proc_name:str, proc_datatype:str):
         # Test for existing procedures
         if self.exist_proc(proc_name):
             return "Error that procedure with that name already exists"
-        self.procedures[proc_name] = {"datatype":proc_datatype,"var_table":{}}
-        # add variables to procedure
-        while len(self.variable_stack) > 0:
-            (var_name, var_datatype, var_scope) = self.variable_stack.pop()
-            if self.exist_local_var(proc_name, var_name):
-                msg = "Error duplicate variable name '{0}' in procedure: '{1}'"
-                print(msg.format(var_name,proc_name))
-            else:
-                data = {
-                    "datatype":var_datatype,
-                    "scope":var_scope   
-                }
-                self.procedures[proc_name]["var_table"][var_name] = data
+        self.procedures[proc_name] = {"datatype":proc_datatype,"var_table":{}}       
     
     def exist_proc(self, proc_name):
         try:
@@ -79,6 +85,14 @@ class procedure_dir():
                 return True 
         except:
             return False
+
+    def get_var_type(self, proc_name:str, var_name:str) -> str:
+        try:
+            procs = self.procedures
+            dt = procs[proc_name]["var_table"][var_name]["datatype"]
+            return dt    
+        except:
+            return "ERROR"
 
     def exist_global_var(self, var_name):
         try:

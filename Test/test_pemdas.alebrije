@@ -1,0 +1,19 @@
+program MyRlike; 
+
+function int stuff(){
+
+}
+
+main(){
+    vars {
+        int: A,B,C,D,E,F;
+        float: G;
+    }
+    A = not A || B;
+     A = 5 + 6 * (4 - 2);
+}
+
+# (-, D, E, t1)
+# (*, C, t1, t2)
+# (+, A, t2, t3)
+# (=,t3, None, A)
