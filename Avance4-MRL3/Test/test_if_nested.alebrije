@@ -1,0 +1,23 @@
+program MyRlike; 
+
+main(){
+    vars {
+        int: a,b,c,d;
+    }
+
+    if(A + B > C * D){
+        A = B + D;
+        if(A > B){
+            G = 5;
+        }else{
+            G = 6.6;
+        }
+    }
+    else{
+        A = D - C;
+    }
+
+    B = A * C + D;
+}
+
+# "((\&lt;\=)|(\&gt;\=)|(\=\=)|(\!\=)|(\&lt;)|(\&gt;))"1

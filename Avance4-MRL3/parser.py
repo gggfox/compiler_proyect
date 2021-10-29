@@ -8,7 +8,7 @@
 #   Updated_at 2021-10-09   #
 #############################
 ''' 
-
+import sys
 import procedure_dir 
 import ply.yacc as yacc
 from lexer import tokens, lexer
@@ -58,13 +58,13 @@ def p_varsC(p):
 
 def p_function(p):
     """
-    function : FUNCTION func_type ID np_set_curr_proc L_PAR params R_PAR  np_set_quad_start block np_ENDFunc 
+    function : FUNCTION func_type ID np_set_curr_proc L_PAR params R_PAR  np_set_quad_start vblock np_ENDFunc 
     """
     p[0] = None
 
 def p_main(p):
     """
-    main : MAIN np_set_curr_proc np_GOTO_END L_PAR R_PAR block 
+    main : MAIN np_set_curr_proc np_GOTO_END L_PAR R_PAR vblock 
     """
 
 def p_type(p):
@@ -98,13 +98,17 @@ def p_func_type(p):
 
 def p_block(p):
     """
-    block : L_BRACE block2 block3 R_BRACE 
-    
-    block2 : vars
-            | empty
+    block : L_BRACE blockB R_BRACE 
 
-    block3 : empty 
-           | statement block3
+    blockB : statement blockB
+           | empty
+    """
+def p_vblock(p):
+    """
+    vblock : L_BRACE vars blockB R_BRACE 
+    
+    vblockB : statement vblockB
+            | empty
     """
 
 def p_params(p):
@@ -124,9 +128,12 @@ def p_statement(p):
            | loop_cond 
            | loop_range 
            | return 
-           | func_call
+           | void_func
     """
-
+def p_void_func(p):
+    '''
+    void_func : func_call SEMICOLON
+    '''
 def p_assign(p):
     """
     assign : var np_add_operand oper_assign np_add_operator expression np_end SEMICOLON
@@ -195,12 +202,12 @@ def p_loop_range(p):
 
 def p_return(p):
     """
-    return : RETURN L_PAR exp R_PAR SEMICOLON
+    return : RETURN L_PAR exp np_end R_PAR SEMICOLON
     """
 
 def p_func_call(p):
     """
-    func_call : ID np_ERA L_PAR func_call_arguments R_PAR np_GOSUB SEMICOLON
+    func_call : ID np_ERA L_PAR func_call_arguments R_PAR np_GOSUB
     """
 
 
@@ -301,6 +308,7 @@ def p_var_cte(p):
     """
     var_cte : var np_add_operand
          | predef_func
+         | func_call
          | CTE_INT np_add_operand
          | CTE_FLOAT np_add_operand
          | CTE_CHAR np_add_operand
@@ -427,16 +435,18 @@ def p_np_end(p):
     #print(operator_stack)
     while len(operator_stack) > 0:
         oper = operator_stack.pop()
-        #print(oper)
-        if oper == "=":
+        if oper == 'stop':
+            break
+
+        if oper == '=':
             operand1 = operand_stack.pop()
             operand2 = operand_stack.pop()
-            quadruples.append("({0},{1},{2},{3})".format(oper, operand1, "", operand2))
+            quadruples.append('({0},{1},{2},{3})'.format(oper, operand1, '', operand2))
         else:
             right_operand = operand_stack.pop()
             left_operand = operand_stack.pop()
-            temp = "temp"+str(proc_dir.get_curr_temp())
-            quadruples.append("({0},{1},{2},{3})".format(oper, left_operand, right_operand, temp))
+            temp = 'temp'+str(proc_dir.get_curr_temp())
+            quadruples.append('({0},{1},{2},{3})'.format(oper, left_operand, right_operand, temp))
             operand_stack.append(temp)
 
 def p_np_read(p):
@@ -592,6 +602,10 @@ def p_np_ENDFunc(p):
     proc_dir.set_quad_end(len(quadruples) - 1)
     proc_dir.reset_curr_temp()
 
+def p_np_break_point(p):
+    'np_break_point : '
+    operator_stack.append('stop')
+
 def p_np_prog_end(p):
     'np_prog_end : '
     quadruples.append('(PROG_END,None,None,None)')
@@ -622,9 +636,13 @@ def priority(op:str) -> int:
     lvl = operator_stack.count('(') + 1
     return val * lvl
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
-        file = open("Test/test_func.alebrije", "r")
+        if len(sys.argv) == 2:
+            test = 'Test/{0}'.format(sys.argv[1])
+        else:
+            test = 'Test/test_func_recursion.alebrije'
+        file = open(test, "r")
         code = ""
         for line in file:
             code += line

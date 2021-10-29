@@ -67,22 +67,24 @@ class procedure_dir():
         print(tabulate(data, headers=header, tablefmt="fancy_grid"),"\n")
 
     def print_var_tables(self) -> None:
-        header = ["name", "datatype", "scope","belongs to"]
+        header = ['name', 'datatype', 'scope','belongs to','address']
         data = []
         procs = self.procedures
         for proc_name in procs:
-            for var_name in procs[proc_name]["var_table"]:
-                datatype = procs[proc_name]["var_table"][var_name]["datatype"]
-                scope = procs[proc_name]["var_table"][var_name]["scope"]
-                data.append([var_name,datatype,scope,proc_name])
-        print(" "*15,"VARIABLE TABLE")
-        print(tabulate(data, headers=header, tablefmt="fancy_grid"),"\n")
+            for var_name in procs[proc_name]['var_table']:
+                datatype = procs[proc_name]['var_table'][var_name]['datatype']
+                scope = procs[proc_name]['var_table'][var_name]['scope']
+                address = procs[proc_name]["var_table"][var_name]['address']
+                data.append([var_name, datatype, scope, proc_name, address])
+        print(' '*15,'VARIABLE TABLE')
+        print(tabulate(data, headers=header, tablefmt='fancy_grid'),'\n')
+
     """
     This function is used to collect varibales(name, datatype, scope) in a
     stack that gets emptied when a new procedure is added to the object
 
     """    
-    def add_variable(self, var_name:str, datatype:str = ""):
+    def add_variable(self, var_name:str, datatype:str = "", address:int = -1):
         if datatype == "":
             datatype = self.curr_datatype
         if self.exist_global_var(var_name):
@@ -90,7 +92,8 @@ class procedure_dir():
         [scope] = ["global" if self.curr_proc == "program" else "local"]
         data = {
             "datatype":datatype, 
-            "scope": scope
+            "scope": scope,
+            "address": address
         }
         self.procedures[self.curr_proc]["var_table"][var_name] = data
 
