@@ -8,9 +8,11 @@ main(){
     vars {
         int: A,B,C,D,E,F;
         float: G;
+        string: w;
     }
     read(A,B,C);
     write(A,B,C);
-    write('hello');
-    write(A,"hello", B, " world",C);
+    w = 'hello' + ' world';
+    write(w,"\n");
+    write(A,"hello", B, " world",C*6,'\n');
 }

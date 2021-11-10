@@ -1,8 +1,8 @@
 program MyRlike; 
 
-function void email(string: header,string: msg){
+function void email(string: header, string: msg){
     vars{
-        int: A,B;
+        int: A,B,size;
     }
     size = A * B + 2;
     size = size + 2;
@@ -10,24 +10,36 @@ function void email(string: header,string: msg){
     write(msg);
 }
 
-function void hello(string: msg){
-    write(msg);
-}
+ function void hello(string: msg){
+     vars{
+         int: a;
+     }
+     write(msg);
+ }
 
 main(){
+    vars{
+        int: i;
+    }
     i = 5 + i * 2;
     email("hello","world");
 }
 
-# 0: (GOTO,1,_,_)
-# 1: (*,A,B,t1)
-# 2: (+,t1,2,t2)
-# 3: (=,t2,_,size)
-# 1: (*,i,2,t1)
-# 2: (+,5,t1,t2)
-# 3: (=,t2,_,i)
-# 4: (ERA,_,_,email)
-# 5: (PARAM,_,"hello",)
-# 6: (PARAM,_,"world",)
-# 7: (GOSUB,email,_,_)
-# 8:
+#  0: (GOTO,9,_,_)
+#  1: (*,A,B,t1)
+#  2: (+,t1,2,t2)
+#  3: (=,t2,_,size)
+#  4: (WRITE, header, _, _)
+#  5: (WRITE, msg, _, _)
+#  6: (ENDFunc, _, _, _)
+#  7: (WRITE, msg, _, _)
+#  8: (ENDFunc, _, _, _)
+#  9: (*,i,2,t1)
+# 10: (+,5,t1,t2)
+# 11: (=,t2,_,i)
+# 12: (ERA,_,_,email)
+# 13: (PARAM,_,"hello",)
+# 14: (PARAM,_,"world",)
+# 15: (GOSUB,email, _, _)
+# 16: ()
+# 17: (ENDProg, _, _, _)

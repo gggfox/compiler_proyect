@@ -1,0 +1,359 @@
+{
+    "proc_dir": {
+        "program": {
+            "datatype": "void",
+            "size": {
+                "local": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                },
+                "temp": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                }
+            },
+            "quad_range": [
+                0,
+                24
+            ],
+            "param_vector": [],
+            "var_table": {},
+            "temps": 0
+        },
+        "stuff": {
+            "datatype": "int",
+            "size": {
+                "local": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                },
+                "temp": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                }
+            },
+            "quad_range": [
+                1,
+                1
+            ],
+            "param_vector": [],
+            "var_table": {
+                "1000": {
+                    "datatype": "int",
+                    "scope": "global",
+                    "address": 1000,
+                    "dim": null
+                }
+            },
+            "temps": 0
+        },
+        "main": {
+            "datatype": "void",
+            "size": {
+                "local": {
+                    "int": 2,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                },
+                "temp": {
+                    "int": 28,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                }
+            },
+            "quad_range": [
+                null,
+                null
+            ],
+            "param_vector": [],
+            "var_table": {
+                "A": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6000,
+                    "dim": 16000
+                },
+                "B": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6001,
+                    "dim": null
+                },
+                "11000": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11000,
+                    "dim": null
+                },
+                "11001": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11001,
+                    "dim": null
+                },
+                "11002": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11002,
+                    "dim": null
+                },
+                "11003": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11003,
+                    "dim": null
+                },
+                "11004": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11004,
+                    "dim": null
+                },
+                "11005": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11005,
+                    "dim": null
+                },
+                "11006": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11006,
+                    "dim": null
+                },
+                "11007": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11007,
+                    "dim": null
+                },
+                "11008": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11008,
+                    "dim": null
+                },
+                "11009": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11009,
+                    "dim": null
+                },
+                "11010": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11010,
+                    "dim": null
+                },
+                "11011": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11011,
+                    "dim": null
+                },
+                "11012": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11012,
+                    "dim": null
+                },
+                "11013": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11013,
+                    "dim": null
+                }
+            },
+            "temps": 14
+        }
+    },
+    "quads": {
+        "0": {
+            "oper": "GOTO",
+            "left": null,
+            "right": null,
+            "res": 2
+        },
+        "1": {
+            "oper": "ENDFUNC",
+            "left": null,
+            "right": null,
+            "res": null
+        },
+        "2": {
+            "oper": "VER",
+            "left": null,
+            "right": 16001,
+            "res": 16000
+        },
+        "3": {
+            "oper": "=",
+            "left": 16002,
+            "right": null,
+            "res": 6001
+        },
+        "4": {
+            "oper": "-",
+            "left": 16005,
+            "right": 16002,
+            "res": 11000
+        },
+        "5": {
+            "oper": "*",
+            "left": 16004,
+            "right": 11000,
+            "res": 11001
+        },
+        "6": {
+            "oper": "+",
+            "left": 11001,
+            "right": 16006,
+            "res": 11002
+        },
+        "7": {
+            "oper": "+",
+            "left": 16003,
+            "right": 11002,
+            "res": 11003
+        },
+        "8": {
+            "oper": "=",
+            "left": 11003,
+            "right": null,
+            "res": 6000
+        },
+        "9": {
+            "oper": "*",
+            "left": 16003,
+            "right": 16004,
+            "res": 11004
+        },
+        "10": {
+            "oper": "*",
+            "left": 16008,
+            "right": 16009,
+            "res": 11005
+        },
+        "11": {
+            "oper": "-",
+            "left": 11005,
+            "right": 16002,
+            "res": 11006
+        },
+        "12": {
+            "oper": "+",
+            "left": 11004,
+            "right": 11006,
+            "res": 11007
+        },
+        "13": {
+            "oper": "=",
+            "left": 11007,
+            "right": null,
+            "res": 6000
+        },
+        "14": {
+            "oper": "+",
+            "left": 16010,
+            "right": 16008,
+            "res": 11008
+        },
+        "15": {
+            "oper": "*",
+            "left": 16004,
+            "right": 11008,
+            "res": 11009
+        },
+        "16": {
+            "oper": "*",
+            "left": 11009,
+            "right": 16009,
+            "res": 11010
+        },
+        "17": {
+            "oper": "*",
+            "left": 16003,
+            "right": 11010,
+            "res": 11011
+        },
+        "18": {
+            "oper": "=",
+            "left": 11011,
+            "right": null,
+            "res": 6000
+        },
+        "19": {
+            "oper": "+",
+            "left": 6000,
+            "right": 6000,
+            "res": 11012
+        },
+        "20": {
+            "oper": "+",
+            "left": 6000,
+            "right": 11012,
+            "res": 11013
+        },
+        "21": {
+            "oper": "=",
+            "left": 11013,
+            "right": null,
+            "res": 6000
+        },
+        "22": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6000
+        },
+        "23": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20000
+        },
+        "24": {
+            "oper": "ENDPROG",
+            "left": null,
+            "right": null,
+            "res": null
+        }
+    },
+    "const_table": {
+        "int": {
+            "10": 16000,
+            "0": 16001,
+            "2": 16002,
+            "5": 16003,
+            "6": 16004,
+            "4": 16005,
+            "3": 16006,
+            "1": 16007,
+            "8": 16008,
+            "9": 16009,
+            "7": 16010
+        },
+        "float": {},
+        "char": {},
+        "string": {
+            "\\n": 20000
+        },
+        "bool": {}
+    }
+}

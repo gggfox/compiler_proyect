@@ -8,7 +8,7 @@
 #   Updated_at 2021-09-25   #
 #############################
 ''' 
-
+import sys
 import ply.lex as lex
 
 reserved = {
@@ -43,46 +43,46 @@ reserved = {
     'abs' : 'ABS',
     'sum' : 'SUM',
     'roof' : 'ROOF',
-    'floor' : 'FLOOR'
+    'floor' : 'FLOOR',
+    'not' : 'NOT',
+    'and' : 'AND',
+    'or' : 'OR'
 }
 
 
 tokens = list(reserved.values()) + [
-    "AND",
-    "OR",
-    "NOT",
-    "LESS",
-    "GREATER",
-    "LESS_EQ",
-    "GREATER_EQ",
-    "EQUIVALENT",
-    "DIFFERENT",
-    "EQUAL",
-    "MULT",
-    "DIV",
-    "PLUS",
-    "MINUS",
-    "REMAINDER",
-    "EXP",
-    "MULT_EQ",
-    "DIV_EQ",
-    "PLUS_EQ",
-    "MINUS_EQ",
-    "L_BRACE",
-    "R_BRACE",
-    "L_BRACKET",
-    "R_BRACKET",
-    "L_PAR",
-    "R_PAR",
-    "COLON",
-    "SEMICOLON",
-    "COMMA",
-    "ID",
-    "CTE_INT",
-    "CTE_FLOAT",
-    "CTE_BOOL",
-    "CTE_CHAR",
-    "CTE_STRING"
+    'LESS',
+    'GREATER',
+    'LESS_EQ',
+    'GREATER_EQ',
+    'EQUIVALENT',
+    'DIFFERENT',
+    'EQUAL',
+    'MULT',
+    'DIV',
+    'PLUS',
+    'MINUS',
+    'REMAINDER',
+    'EXP',
+    'MULT_EQ',
+    'DIV_EQ',
+    'PLUS_EQ',
+    'MINUS_EQ',
+    'L_BRACE',
+    'R_BRACE',
+    'L_BRACKET',
+    'R_BRACKET',
+    'L_PAR',
+    'R_PAR',
+    'COLON',
+    'SEMICOLON',
+    'COMMA',
+    'ID',
+    'CTE_INT',
+    'CTE_FLOAT',
+    'CTE_BOOL',
+    'CTE_CHAR',
+    'CTE_STRING'
 ] 
 
 # Simple tokens
@@ -110,36 +110,13 @@ t_R_PAR = r'\)'
 t_COLON = r'\:'
 t_SEMICOLON = r'\;'
 t_COMMA = r'\,'
-
+t_EQUIVALENT = r'\=\='
+t_DIFFERENT = r'\!\='
 t_ignore = ' \t'
-t_ignore_COMMENT = r'\#.*'
+t_ignore_COMMENT = r'\/\/.*'
 
 # complex tokens
-def t_EQUIVALENT(t):
-    r'((\=\=)|(is\b))'
-    t.value = 'EQUIVALENT'
-    return t
-
-def t_DIFFERENT(t):
-    r'((\!\=)|(isnt\b))'
-    t.value = 'DIFFERENT'
-    return t
-
-def t_AND(t):
-    r'((\&\&)|(and\b))'
-    t.value = 'AND'
-    return t
-
-def t_OR(t):
-    r'((\|\|)|(or\b))'
-    t.value = 'OR'
-    return t
-
-def t_NOT(t):
-    r'((\!)|(not\b))'
-    t.value = 'NOT'
-    return t
-
+    
 def t_CTE_BOOL(t):
     r'(True|true|False|false)'
     t.type = 'CTE_BOOL'
@@ -171,8 +148,8 @@ def t_CTE_CHAR(t):
     return t
 
 '''
-the regex does a negative look ahead(?!) for ' or " depending
-on the case, so \'\'\' is invalid and so is """
+the regex does a negative look ahead(?!) for ' or ' depending
+on the case, so \'\'\' is invalid and so is '
 '''
 def t_CTE_STRING(t):
     r'(\'((?!\').)*\')|(\"((?!\").)*\")'
@@ -181,11 +158,11 @@ def t_CTE_STRING(t):
 
 # Define a rule so we can track line numbers
 def t_newline(t):
-    r"\n+"
+    r'\n+'
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print("Illegal character '{0}'".format(t.value[0]))
+    print('Illegal character "{0}"'.format(t.value[0]))
     t.lexer.skip(1)
 
 
@@ -193,9 +170,12 @@ def t_error(t):
 lexer = lex.lex()
 
 # Tokenize
-if __name__ == "__main__":
-    code = ""
-    file = open("Test/test_func.alebrije", "r")
+if __name__ == '__main__':
+    code = ''
+    if len(sys.argv) > 1:
+        file = open('{0}'.format(sys.argv[1]), 'r')
+    else:
+        file = open('Test/test_func.alebrije', 'r')
     for line in file:
         code += line
 
@@ -207,4 +187,3 @@ if __name__ == "__main__":
         if not tok:
             break  # No more input
         print(tok)
-

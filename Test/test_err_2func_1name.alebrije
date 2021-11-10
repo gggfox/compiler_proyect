@@ -1,0 +1,20 @@
+# Should raise a ValueError, 
+# because the name of a function is repeated
+program MyRlike;
+
+function int one(){
+    return(1);
+}
+
+function int two(){
+    return(2);
+}
+
+function int one(){
+    return(1);
+}
+
+main(){
+    one();    
+}
+
