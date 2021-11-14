@@ -10,7 +10,7 @@ main(){
     B = 2;
     C = 3;
     D = 4;
-    if(A + B > C * D){
+    if(A + B * 10 > C * D){
         A = B + D;
         write("IF 1","\n");
         if(A > B){

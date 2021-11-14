@@ -24,12 +24,20 @@ class Stack:
     returns the priority of a given operator
     '''
     def priority(self, op:str) -> int:
+        """reutns the priority of an operator
+
+        Args:
+            op (str): operator
+
+        Returns:
+            int: value of a given operator
+        """
         val = 0
-        if op in ['and', 'or', '&&', '||', 'not', '!', 'AND', 'OR']:
+        if op in ['=', '+=', '-=', '*=', '/=']:
             val = 1
-        if op in ['>','<','>=','<=','==','!=', 'DIFFERENT']:
+        if op in ['and', 'or', '&&', '||', 'AND', 'OR']:
             val = 2
-        elif op in ['=', '+=', '-=', '*=', '/=']:
+        elif op in ['>','<','>=','<=','==','!=', 'DIFFERENT','EQUIVALENT']:
             val = 3
         elif op in ['+','-']:
             val = 4
@@ -71,11 +79,18 @@ class Stack:
         return res
 
     def get_RL_operands(self) -> (str,str):
+        """pops the right and left operands out of the operand stack
+
+        Returns:
+            (int,int): returns a tuple of ints
+        """
         right  = self.operands.pop()
         left   = self.operands.pop()
         return (right,left)
 
     def print_all_stacks(self) -> None:
+        """prints all stacks
+        """
         print('jumps',self.jumps)
         print('operators',self.operators)
         print('operands',self.operands)

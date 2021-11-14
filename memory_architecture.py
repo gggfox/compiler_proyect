@@ -1,5 +1,8 @@
 memory = {
-    'real': {},
+    'ptr': {
+        'init_addr':21000,
+        'curr_addr':21000,
+    },
     'global': {
         'init_addr': {
             'int': 1000,

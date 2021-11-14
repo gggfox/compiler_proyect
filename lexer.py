@@ -5,7 +5,7 @@
 #                           #
 #   alebrije_lexer.py       #
 #   Created_at 2021-09-25   #
-#   Updated_at 2021-09-25   #
+#                           #
 #############################
 ''' 
 import sys
@@ -38,13 +38,7 @@ reserved = {
     'plotXY' : 'PLOT_XY',
     'max' : 'MAX',
     'min' : 'MIN',
-    'length' : 'LENGTH',
-    'dot' : 'DOT',
-    'abs' : 'ABS',
     'sum' : 'SUM',
-    'roof' : 'ROOF',
-    'floor' : 'FLOOR',
-    'not' : 'NOT',
     'and' : 'AND',
     'or' : 'OR'
 }

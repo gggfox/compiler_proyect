@@ -1,45 +1,38 @@
 program MyRlike; 
 
+ function void hello(string: msg){
+     vars{
+         int: A;
+     }
+     A = 3;
+     msg += " ";
+     write(msg,A,"\n");
+ }
+
 function void email(string: header, string: msg){
     vars{
         int: A,B,size;
     }
+    A = 2;
+    B = 3;
     size = A * B + 2;
     size = size + 2;
-    write(header);
-    write(msg);
+    write(header,"\n");
+    write(msg,"\n");
+    hello("my friend");
 }
 
- function void hello(string: msg){
-     vars{
-         int: a;
-     }
-     write(msg);
+
+
+ function int one(){
+     return(1);
  }
 
 main(){
     vars{
         int: i;
     }
+    i = 1;
     i = 5 + i * 2;
     email("hello","world");
 }
-
-#  0: (GOTO,9,_,_)
-#  1: (*,A,B,t1)
-#  2: (+,t1,2,t2)
-#  3: (=,t2,_,size)
-#  4: (WRITE, header, _, _)
-#  5: (WRITE, msg, _, _)
-#  6: (ENDFunc, _, _, _)
-#  7: (WRITE, msg, _, _)
-#  8: (ENDFunc, _, _, _)
-#  9: (*,i,2,t1)
-# 10: (+,5,t1,t2)
-# 11: (=,t2,_,i)
-# 12: (ERA,_,_,email)
-# 13: (PARAM,_,"hello",)
-# 14: (PARAM,_,"world",)
-# 15: (GOSUB,email, _, _)
-# 16: ()
-# 17: (ENDProg, _, _, _)

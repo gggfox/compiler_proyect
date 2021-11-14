@@ -2,114 +2,71 @@
 import json
 from memory_architecture import memory
 
+
 class VM:
     def __init__(self):
-        self.quadruples = []
-        self.memory_arch = memory
-        self.ram = [None] * 21000
+        self.gosub = []
+        self.curr_func = None
+        self.era = 0
+        # RAM
+        self.glob = {}
+        self.local = [{}]
+        self.temp = [{}]
+        self.const = {}
+        self.pointer = {}
 
-    def verify_segment(self, segment: str) -> None:
-        """verifies the segment is allowed
 
-        Args:
-            segment (str): name of the segment
-
-        Raises:
-            ValueError: if the segment is not equal to 
-            either 'global', 'local', 'temporal' or 'constant'
-        """
-        if not segment in ['global','local','temporal','constant']:
-            err = 'segment "{0}" doesn`t exist'.format(segment)
-            raise ValueError(err)
-        
-    def verify_datatype(self, datatype: str) -> None:
-        if not datatype in ['int','float','bool','char','string']:
-            err = 'datatype "{0}" doesn`t exist'.format(datatype)
-            raise ValueError(err)
-
-    def verify_range(self, segment:str, datatype:str, address:int) -> None:
-        initial = self.get_initial_address(segment,datatype)
-        final = initial + 999
-        if address < initial or address > final:
-            err = 'address "{0}" is out of the range of [{1}][{2}]'.format(address,segment,datatype)
-            raise ValueError(err)
-
-    def get_initial_address(self, segment:str, datatype:str) -> int:
-        self.verify_segment(segment)
-        self.verify_datatype(datatype)
-
-        return self.memory_arch[segment]['initial_addr'][datatype]
-
-    def get_current_address(self, segment:str, datatype:str) -> int:
-        self.verify_segment(segment)
-        self.verify_datatype(datatype)
-        
-        address = self.memory_arch[segment]['current_addr'][datatype]
-        self.memory_arch[segment]['current_addr'][datatype] += 1
-        return address
-
-    def set_current_address(self, segment:str, datatype:str, new_address:int) -> None:
-        self.verify_segment(segment)
-        self.verify_datatype(datatype)
-        self.verify_range(segment, datatype, new_address)
-
-        self.memory_arch[segment]['current_address'][datatype] = new_address
-
-    def add_to_memory(self, address:int, value:str):
-        self.memory_arch['real'][address] = value
-
-    def verify_local(self,addr:int, datatype:str) -> None:
-        
-        lower = None
-        upper = None
-        err = ''
-        if datatype == type(1):
-            lower,upper = 6000,6999
-            err = 'int'
-        elif datatype == type(1.1):
-            lower,upper = 7000,7999
-            err = 'float'
-        elif datatype == type(True):
-            lower,upper = 8000,8999
-            err = 'bool'
-        elif datatype == type('char') and len(self.ram[addr]) == 1:
-            lower,upper = 9000,9999
-            err = 'char'
-        elif datatype == type('str'):
-            lower,upper = 10000,10999
-            err = 'string'
-
-        if lower > addr or addr > upper:
-            msg = f'wrong type assignation to local {err} variable addr: {addr}'
-            raise TypeError(msg)
-
-    def print_ram(self) -> None:
-        for i in range(len(self.ram)):
-            if self.ram[i] != None:
-                print(i, self.ram[i], type(self.ram[i]))    
 
 
     def add_const_var_to_ram(self, json_object):
+        """adds consts to the constant dictionary
+
+        Args:
+            json_object: procedure directory, quadruples and constant table
+        """
         for datatype in json_object['const_table']:
-            for const ,addr in json_object['const_table'][datatype].items():
+            for const, addr in json_object['const_table'][datatype].items():
                 if datatype == 'int':
                     const = int(const)
                 elif datatype == 'float':
-                    cosnt = float(const)
+                    const = float(const)
                 elif datatype == 'bool':
                     const = bool(const)
 
-                self.ram[addr] = const
+                self.const[addr] = const
 
-    def input_type(self,addr:int):
-        base = addr - (addr%1000)
+
+    def add_global_var_to_ram(self,json_object):
+        """adds global variables to memory
+
+        Args:
+            json_object: dictionary with procedure directory, quadruples and constant table
+        """
+        variables = json_object['proc_dir']['program'].get('var_table')
+        for key,value in enumerate(variables):
+            self.glob[variables[value]['address']] = None
+      
+
+    def input_type(self, addr: int):
+        """handles the READ operation
+
+        Args:
+            addr (int): address
+
+        Raises:
+            ValueError: in case a string is in the char section
+
+        Returns:
+            [type]: the input value, its type depends on the address
+        """
+        base = addr - (addr % 1000)
         if base == 6000:
             res = int(input())
         elif base == 7000:
             res = float(input())
         elif base == 8000:
             res = bool(input())
-        elif res == 9000:#char
+        elif res == 9000:
             res = input()
             if len(res) > 1:
                 raise ValueError('CHAR datatypes longer than expected')
@@ -117,89 +74,237 @@ class VM:
             res = input()
         return res
 
-    def clean_datatype(self, addr, value):
-        #print(addr,value)
-        base = addr - (addr%1000)
-        if base == 6000:
-            return int(value)
-        elif base == 7000:
-            return float(value)
-        else:
-            return value
+    def is_glob(self,addr:int) -> bool:
+        if type(addr) != int:
+            return False
+        if addr >= 1000 and addr < 6000:
+            return True
 
-    def run_quads(self,json_object):
-        #self.print_ram()
+    def is_local(self, addr: int) -> bool:
+        if type(addr) != int:
+            return False
+        if addr >= 6000 and addr < 11000:
+            return True
+
+    def is_temp(self, addr: int) -> bool:
+        if type(addr) != int:
+            return False
+        if addr >= 11000 and addr < 16000:
+            return True
+
+    def is_const(self, addr:int) -> bool:
+        if type(addr) != int:
+            return False
+        if addr >= 16000 and addr < 21000:
+            return True
+
+    def is_pointer(self,addr:int) -> bool:
+        if type(addr) != int:
+            return False
+        if addr >= 21000:
+            return True
+
+    def verify_array(self, left: int, right: int, res: int) -> None:
+        if (left < right) or (left > res):
+            print(left,right,res)
+            raise ValueError('index of array is out of bounds')
+
+
+    def save(self,addr,sol):
+        if type(addr) != int or addr < 1000:
+            return addr
+        if self.is_glob(addr):
+            self.glob[addr] = sol
+        elif self.is_local(addr):
+            self.local[self.era][addr] = sol
+        elif self.is_temp(addr):
+            self.temp[self.era][addr] = sol
+        elif self.is_pointer(addr):
+            self.pointer[addr] = sol
+  
+
+    def get_mem(self,addr):
+        if addr == None or type(addr) != int:
+            return addr
+        elif self.is_glob(addr):
+            return self.glob[addr]
+        elif self.is_temp(addr):
+            return self.temp[self.era][addr]
+        elif self.is_local(addr):
+            # expression in param
+            #print(self.era,self.gosub)
+            if self.era != len(self.gosub):
+                return self.local[self.era - 1][addr]
+            # default
+            else:
+                return self.local[self.era][addr]
+        elif self.is_const(addr):
+            return self.const[addr]
+        elif self.is_pointer(addr):
+            return self.pointer[addr]
+
+    def run_quads(self, json_object):
+        proc_dir = json_object['proc_dir']
+
         quad_length = len(json_object['quads'])
-        ip = 0 # instruction pointer
-
+        ip = 0  # instruction pointer
         while ip < quad_length:
             quad = json_object['quads'][str(ip)]
-            left = quad['left']            
+            left = quad['left']
             right = quad['right']
             res = quad['res']
-            if quad['oper'] == 'GOTO':
+            oper = quad['oper']
+
+            # Convert pointer to real address
+            if self.is_pointer(res):
+                res = self.get_mem(res)
+            if self.is_pointer(left):
+                left = self.get_mem(left)
+            if self.is_pointer(right):
+                right = self.get_mem(right)
+       
+            #self.get_mem(left)
+
+            if oper == 'GOTO':
                 ip = int(res)
                 continue
-            elif quad['oper'] == 'GOTOF':
-                if self.ram[left] == False:
+            elif oper == 'GOTOF':
+                if self.get_mem(left) == False:
                     ip = int(res)
                     continue
-            elif quad['oper'] == 'WRITE':
-                if self.ram[res] == '\\n':
+            elif oper == 'WRITE':
+                disp = self.get_mem(res)
+                if disp == '\\n':
                     print()
-                elif self.ram[res] == '\\t':
+                elif disp == '\\t':
                     print(end='\t')
                 else:
-                    print(self.ram[res],end='')
+                    print(disp,end='')
 
-            elif quad['oper'] == 'READ':
+            elif oper == 'READ':
                 addr = quad['res']
-                self.ram[res] = self.input_type(addr)
+                solution = self.input_type(addr)
+                self.save(res, solution)
+            elif oper == 'VER':
+                self.verify_array(
+                    self.get_mem(left), self.get_mem(right), self.get_mem(res))
+                ip += 1
+                quad = json_object['quads'][str(ip)]
+                left, right, res = quad['left'], quad['right'], quad['res']
+                solution = self.get_mem(right) + left
+                self.save(res, solution)
 
-            elif quad['oper'] == '==':
-                self.ram[res] = self.ram[left] == self.ram[right]
-            elif quad['oper'] == '!=':
-                self.ram[res] = self.ram[left] != self.ram[right]
-            elif quad['oper'] == '>=':
-                self.ram[res] = self.ram[left] >= self.ram[right]
-            elif quad['oper'] == '<=':
-                self.ram[res] = self.ram[left] <= self.ram[right]
-            elif quad['oper'] == '>':
-                self.ram[res] = self.ram[left] > self.ram[right]
-            elif quad['oper'] == '<':
-                self.ram[res] = self.ram[left] < self.ram[right]
-            elif quad['oper'] == 'and':
-                self.ram[res] = self.ram[left] and self.ram[right]
-            elif quad['oper'] == 'or':
-                self.ram[res] = self.ram[left] or self.ram[right]
-            elif quad['oper'] == '*':
-                self.ram[res] = self.ram[left] * self.ram[right]
-            elif quad['oper'] == '/':
-                self.ram[res] = self.ram[left] / self.ram[right]  
-            elif quad['oper'] == '+':
-                self.ram[res] = self.ram[left] + self.ram[right]      
-            elif quad['oper'] == '-':
-                self.ram[res] = self.ram[left] - self.ram[right]  
-            elif quad['oper'] == '=':
-                self.ram[res] = self.clean_datatype(addr=res,value=self.ram[left])
-                #self.verify_local(quad['res'], type(self.ram[left]))
-            
-            #print(ip, self.ram[quad['res']])
+            # ERA necesia borrar memoria
+            elif oper == 'ERA':
+                self.curr_func = res
+                self.era += 1
+                self.local.append({})
+                self.temp.append({})
+                
+            elif oper == 'PARAM':
+                func_datatype = proc_dir[self.curr_func]['datatype']
+                [is_void] = [-1 if func_datatype == 'void' else 0]
+                param_datatype = proc_dir[self.curr_func]['param_vector'][res-1]
+                real_datatype = list(proc_dir[self.curr_func]['var_table'].items())[
+                    res+is_void][1]['datatype']
+                if param_datatype != real_datatype:
+                    raise TypeError('function param datatype mismatch')
+
+                addr = list(proc_dir[self.curr_func]['var_table'].items())[
+                    res+is_void][1]['address']
+                
+                self.save(addr,self.get_mem(left))
+             
+            elif oper == 'GOSUB':
+
+                
+                #print(self.era,self.gosub)
+                if self.era == len(self.gosub)+1:
+                    ip = proc_dir[left]['quad_range'][0]
+                    self.gosub.append(res)
+                    continue
+                    
+                
+            elif oper == 'RET':
+                func_datatype = proc_dir[self.curr_func]['datatype']
+                if func_datatype == 'void':
+                    raise TypeError('void functions dont return a value')
+
+                lst = list(proc_dir[self.curr_func]['var_table'].items())
+                addr = lst[0][1]['address']
+                self.glob[addr] = self.get_mem(left)
+                self.era -= 1
+                del self.local[-1]
+                del self.temp[-1]
+                ip = self.gosub.pop()
+
+            elif oper == 'ENDFUNC':
+                ip = self.gosub.pop()
+                del self.local[-1]
+                del self.temp[-1]
+                self.era -= 1
+                continue
+            elif oper == '==':
+                solution = self.get_mem(left) == self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '!=':
+                solution = self.get_mem(left) != self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '>=':
+                solution = self.get_mem(left) >= self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '<=':
+                solution = self.get_mem(left) <= self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '>':
+                solution = self.get_mem(left) > self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '<':
+                solution = self.get_mem(left) < self.get_mem(right)
+                self.save(res,solution)
+            elif oper == 'and':
+                solution = self.get_mem(left) and self.get_mem(right)
+                self.save(res,solution)
+            elif oper == 'or':
+                solution = self.get_mem(left) or self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '*':
+                solution = self.get_mem(left) * self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '/':
+                solution = self.get_mem(left) / self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '+':
+                solution = self.get_mem(left) + self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '-':
+                solution = self.get_mem(left) - self.get_mem(right)
+                self.save(res,solution)
+            elif oper == '=':
+                solution = self.get_mem(left)
+                self.save(res,solution)
+               
+               
             ip += 1
 
-    def execute(self, file_name:str ='code.json'):
-        with open(file_name,'r') as openfile:
+    def execute(self, file_name: str = 'code.json'):
+        with open(file_name, 'r') as openfile:
             json_object = json.load(openfile)
 
-        # for i in json_object['quads']:
-        #     print(json_object['quads'][i])
 
         self.add_const_var_to_ram(json_object)
+        self.add_global_var_to_ram(json_object)
         self.run_quads(json_object)
-        self.print_ram()
+      
+        print()
+        print(self.glob)
+        print(self.local)
+        print(self.temp)
+        print(self.const)
+
+
+
 
 if __name__ == '__main__':
     vm = VM()
     vm.execute()
-
-

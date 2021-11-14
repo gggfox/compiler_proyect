@@ -31,6 +31,7 @@ class procedure_dir():
         self.curr_quadruple = 0
         self.curr_temp = 0
         self.curr_datatype = ''
+        self.func_call = ''
         self.procedures = {}
         self.variable_stack = []
         self.curr_arg_k = 0
@@ -65,34 +66,42 @@ class procedure_dir():
     '''
     '''
     def gen_temp(self, operator:str, operand1:str, operand2:str) -> str:
-        var1 = self.get_var_datatype(operand1)
-        var2 = self.get_var_datatype(operand2)
+        try:
+            var1 = self.get_var_datatype(operand1)
+            var2 = self.get_var_datatype(operand2)
 
 
-        # Catch cte ints and floats
-        if var1 == 'ERROR':
-            [_,var1,_] = str(type(operand1)).split('\'')
-        if var2 == 'ERROR':
-            [_,var2,_] = str(type(operand2)).split('\'')
+            # Catch cte ints and floats
+            if var1 == 'ERROR':
+                [_,var1,_] = str(type(operand1)).split('\'')
+            if var2 == 'ERROR':
+                [_,var2,_] = str(type(operand2)).split('\'')
 
 
-        # print(operand1,operand2)
-        # print(operator,var1,var2)
-        #self.print_var_tables()
-        #print(operator,var1,var2,operand1,operand2)
-        temp_datatype = SemanticCube[operator][var1][var2]
-        self.add_temp(temp_datatype)    
-        temp = 'temp'+str(self.get_curr_temp())   
-        addr = self.memory['temp']['curr_addr'][temp_datatype]
-        self.memory['temp']['curr_addr'][temp_datatype] += 1
-        self.add_variable(addr, temp_datatype, addr, 'temp')
-        #print(addr)
+            # print(operand1,operand2)
+            # print(operator,var1,var2)
+            #self.print_var_tables()
+            #print(operator,var1,var2,operand1,operand2)
+            temp_datatype = SemanticCube[operator][var1][var2]
+            self.add_temp(temp_datatype)    
+            temp = 'temp'+str(self.get_curr_temp())   
+            addr = self.memory['temp']['curr_addr'][temp_datatype]
+            self.memory['temp']['curr_addr'][temp_datatype] += 1
+            self.add_variable(addr, temp_datatype, addr, 'temp')
+            return addr
+        except:
+            raise TypeError('undefined variable')
+
+    def gen_ptr(self)->int:
+        addr = self.memory['ptr']['curr_addr']
+        self.memory['ptr']['curr_addr'] += 1
         return addr
-
     '''
     '''
-    def reset_curr_temp(self) -> None:
-        self.curr_temp = 0
+    def reset_local_and_temp(self) -> None:
+        for datatype in self.memory['temp']['curr_addr']:
+            self.memory['temp']['curr_addr'][datatype] = self.memory['temp']['init_addr'][datatype]
+            self.memory['local']['curr_addr'][datatype] = self.memory['local']['init_addr'][datatype]
 
     '''
     '''    
@@ -107,8 +116,7 @@ class procedure_dir():
 
         Args:
             proc_name (str): name of the procedure 
-            proc_datatype (str, optional): the datatype of the procedure it is
-                void in case its main or the program. Defaults to 'void'.
+            proc_datatype (str, optional): the datatype of the procedure 
         """
         self.curr_proc = proc_name
         self.add_procedure(proc_name, proc_datatype)
@@ -127,16 +135,30 @@ class procedure_dir():
         datatype = self.procedures[proc_name]['datatype']
         return datatype
 
+    def get_func_return_addr(self) -> int:
+        proc_datatype = self.procedures[self.curr_proc]['datatype']
+        if proc_datatype == 'void' and not self.curr_proc in ['program','main']:
+            raise TypeError('void dosent return a value')
+        func = self.func_call
+        if func == '':
+            func = self.curr_proc
+        res = self.procedures[func]['var_table'][func]['address']
+        return res
+        
+
     def print_procedure_directory(self) -> None:
         """Prints the procedure directory in console"""
-        header = ['name', 'datatype','quad range','#params','#vars','#temps','li','lf','lb','lc','ls','ti','tf','tb','tc','ts']
+        header = ['name', 'datatype','quad range','#param','local+param','#temps','li','lf','lb','lc','ls','ti','tf','tb','tc','ts']
         data = []
         
         for proc in self.procedures:
+            global_var = 0
             datatype = self.procedures[proc]['datatype']
+            if datatype != 'void':
+                global_var = 1
             quad_range = self.procedures[proc]['quad_range']
             params = len(self.procedures[proc]['param_vector'])
-            variables = len(self.procedures[proc]['var_table']) - params
+            variables = len(self.procedures[proc]['var_table']) - global_var
             temps = self.procedures[proc]['temps']
 
             # local ints, floats, bools, chars, strings
@@ -182,22 +204,10 @@ class procedure_dir():
         dim = self.procedures[self.curr_proc]['var_table'][var_name].get('dim')
         if dim != None:
             return dim
-        # dim = self.procedures['global']['var_table'][var_name].get('dim')
-        # if dim != None:
-        #     return dim
-        
-    # def get_arr_dim(self, var):
-    #     if self.procedures[self.curr_proc]['var_table'][var]['dim'] != None:
-    #         return self.procedures[self.curr_proc]['var_table'][var]['dim']
-    #     elif self.procedures['global']['var_table'][var]['dim'] != None:
-    #         return self.procedures['global']['var_table'][var]['dim']
-    #     else:
-    #         return None
 
     '''
     This function is used to collect varibales(name, datatype, scope) in a
     stack that gets emptied when a new procedure is added to the object
-
     '''    
     def add_variable(self, var_name:str, datatype:str = '', addr:int = -1, scope:str = 'local', dim:int = None):
         if datatype == '':
@@ -209,8 +219,11 @@ class procedure_dir():
             raise ValueError(msg)
         [scope] = ['global' if self.curr_proc == 'program' else scope]
         if addr == -1:
-            addr = self.memory['local']['curr_addr'][datatype]
-            self.memory['local']['curr_addr'][datatype] += 1
+            if dim == None:
+                dim = 0
+            self.add_const(dim, datatype='int')
+            addr = self.memory[scope]['curr_addr'][datatype]
+            self.memory[scope]['curr_addr'][datatype] += 1 + dim
         data = {
             'datatype':datatype, 
             'scope': scope,
@@ -267,7 +280,8 @@ class procedure_dir():
         if proc_datatype != 'void':
             addr = self.memory['global']['curr_addr'][proc_datatype]
             self.memory['global']['curr_addr'][proc_datatype] += 1
-            self.add_variable(addr, proc_datatype, addr,'global' )
+            self.add_variable(proc_name, proc_datatype, addr,'global' )
+            
 
     def reset_curr_arg_k(self) -> None:
         """sets the counter of current arguments to 0"""
@@ -362,16 +376,31 @@ class procedure_dir():
             return 'ERROR'
 
     def get_var_addr(self, var_name:str) -> int:
+        proc = self.curr_proc
         try:
-            res = self.procedures[self.curr_proc]['var_table'][var_name]['address']
-            if res == None:
-                res = self.curr_proc['global']['var_table'][var_name]['address']
-            return res
+            val = self.procedures['program']['var_table'].get(var_name)
+            if  val != None:
+                return val['address']
+            val = self.procedures[proc]['var_table'].get(var_name)
+            if  val != None:
+                return val['address']
+
         except:
-            return -1
             msg = f'A variable with the name "{var_name}" does not exist'
             raise NameError(msg)
-        
+
+    def get_var_dim(self, var_name:str) -> int:
+        try:
+            res = self.procedures['program']['var_table'].get(var_name)
+            if res != None:
+                return res['dim']
+            res = self.procedures[self.curr_proc]['var_table'].get(var_name)
+            if res != None:
+                return res['dim']
+
+        except:
+            msg = f'A variable with the name "{var_name}" does not exist'
+            raise NameError(msg)
     '''
     '''
     def exist_global_var(self, var_name):

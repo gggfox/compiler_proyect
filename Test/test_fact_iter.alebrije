@@ -1,4 +1,7 @@
 program MyRlike;
+vars{
+    int: w;
+}
 
 function int fact(int: num){
     vars{
@@ -10,29 +13,23 @@ function int fact(int: num){
         accum = accum * num;
         num = num - 1;
     }
-
-    # fix return
-    # return(accum);
-    return(4);
+    //write('accum: ',accum,'\n');
+    return(accum);
 }
 
 main(){
-    write((2 + fact(6) * fact(2)) * 2);    
-}
+    vars{
+        int: a,b,c;
+    }
+    a = fact(4);
+    b = fact(3);
+    write("a:",a,"\n");
+    write("b:",b,"\n");
 
-#  0: ('GOTO', None, 10, None)
-#  1: (=, 1, _, accum)
-#  2: (>,num,1,temp1)
-#  3: ('GOTOF', 'temp1', 9, None)
-#  4: (*,accum,num,temp2)
-#  5: (=,temp2,,accum)
-#  6: (-,num,1,temp3)
-#  7: (=,temp3,,num)
-#  8: ('GOTO', None, 2, None)
-#  9: (ENDFUNC,_,_,_)
-# 10: (ERA,fact,_,_)
-# 11: (+,2,6,temp1)                esta parte deberia de estar despues de llamar a la funcion
-# 12: (PARAM,temp1,1,_)
-# 13: (GOSUB,fact,0,_)
-# 14: ('WRITE', 'accum')
-# 15: (PROG_END, _, _, _)
+
+    // (2 + 24 * 2) * 2 = 100
+    write('res: ',(2 + fact(4) * fact(2)) * 2,'\n');    
+
+    w = 6;
+    w = 2;
+}

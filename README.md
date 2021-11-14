@@ -47,13 +47,14 @@ python parser.py test_if.alebrije
 -[X] Maquina Virtual: Ejecucion de Expresiones Aritmeticas y Estatutos Secuenciales
 
 ## Semana #6(Nov08-Nov12)
--[ ] Generacion de Codigo Arreglos/Tipo estructurados
+-[X] Generacion de Codigo Arreglos/Tipo estructurados
 -[X] Maquina Virtual: Ejecucion de Estatutos Condicionales
 
 ## Semana #7(Nov15-Nov19)
 -[ ] 1era version de la Documentacion
 -[ ] Generacion de Codigo y Maquina Virtual para una parte de la aplicacion particular
--[ ] Maquina Virtual: Ejecucion de Modulos y Arreglos
+-[X] Maquina Virtual: Ejecucion de Modulos 
+-[X] Maquina Virtual: Ejecucion de Arreglos
 
 ## Semana #8 (Nov22-Nov24) FINAL
 -[ ] Entregua final del proyecto NOV. 24, 12:00PM

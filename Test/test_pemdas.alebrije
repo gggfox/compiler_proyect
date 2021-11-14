@@ -12,19 +12,23 @@ main(){
         bool: D,E,F;
         float: G;
     }
-    // 17
-    A = 5 + 6 * (4 - 2);
+    // 17.5
+    A = 5.5 + 6 * (4 - 2);
+    write(A,'\n');
     // 102 
     B = 5 * 6 + 8 * 9;
+    write(B,'\n');
     // 4050
     C = 5 * (6 * (7 + 8)) * 9;
-    // True
+    write(C,'\n');
+    // False
     D = 1+1 == 1;
+    write(D);
     // True
     E = (4 + 3 >= 5) and (5 <= 6);
-
+    write(E);
     F = True;
-
+    write(F);
     A *= 2;
     A -= 4;
 }

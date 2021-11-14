@@ -7,7 +7,7 @@ main(){
     A = 0;
     B = 10;
     while (A <= B) {
-        write(A,"\n");
+        write(A);
         A = A + 1;
     }
 
