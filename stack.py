@@ -12,17 +12,27 @@ class Stack:
     aka the last operator to be added into the stack
     '''
     def top(self, stack:list):
+        """retursn the top element of a given list
+
+        Args:
+            stack (list): a general stack
+
+        Returns:
+            item: top item in given stack
+        """
         if len(stack) > 0:
             return stack[len(stack) - 1]
         return 'Stack length is 0'
 
 
-    def top_operator_priority(self):
+    def top_operator_priority(self) -> int:
+        """returns the priority of the operator in top of the operator stack
+
+        Returns:
+            int: priority
+        """
         return self.priority(self.top(self.operators))
 
-    '''
-    returns the priority of a given operator
-    '''
     def priority(self, op:str) -> int:
         """reutns the priority of an operator
 
@@ -35,7 +45,7 @@ class Stack:
         val = 0
         if op in ['=', '+=', '-=', '*=', '/=']:
             val = 1
-        if op in ['and', 'or', '&&', '||', 'AND', 'OR']:
+        if op in ['and', 'or', 'AND', 'OR']:
             val = 2
         elif op in ['>','<','>=','<=','==','!=', 'DIFFERENT','EQUIVALENT']:
             val = 3
@@ -43,7 +53,7 @@ class Stack:
             val = 4
         elif op in ['*','/','%']:
             val = 5
-        elif op == '**':
+        elif op in ['^']:
             val = 6
         elif op == '(':
             val = 7
@@ -51,25 +61,6 @@ class Stack:
             val = 0
         lvl = self.operators.count('(') + 1
         return val * lvl
-
-
-    def verify_priority(self, op:str) -> bool:
-        """This is a function that returns true
-        if the given operand has a lower priority
-        than the operand on top of the operand stack
-
-        Args:
-            op (str): operand
-
-        Returns:
-            bool: returns true if op has a lower priority than the operand 
-                on top of the operand stack 
-        """
-        #print(self.priority(op),'<=',self.priority(self.top(self.operators)))
-        #print(op,'<=',self.top(self.operators))
-        #self.print_all_stacks()
-        return self.priority(op) <= self.priority(self.top(self.operators))
-
 
     def top_isnt_lpar(self) -> bool:
         """

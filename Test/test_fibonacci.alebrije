@@ -1,0 +1,45 @@
+program MyRlike; 
+
+function void aux_fibonacci(int: limit,int: curr,int:prev,int:cont){
+    vars{
+        int: aux;
+    }
+    if(cont < limit){
+        write(curr,",");
+        cont += 1;
+        aux = prev;
+        prev = curr;
+        curr += aux;
+        aux_fibonacci(limit,curr,prev,cont);
+    }
+
+}
+
+function void fibonacci(int: limit){
+    vars{
+        int: prev,curr,aux;
+    }
+    if(limit<0){
+        write("NEGATIVE NUMBER");
+    }
+    prev = 1;
+    curr = 1;
+    if(limit > 1){
+       write(prev,","); 
+    }
+    if(limit > 2){
+        write(curr,",");        
+    }
+
+    if(limit > 3){
+        aux = prev;
+        prev = curr;
+        curr += aux;
+        aux_fibonacci(limit,curr,prev,2);
+    }
+}
+
+
+main(){
+   fibonacci(10); 
+}

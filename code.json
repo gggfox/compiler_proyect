@@ -20,48 +20,70 @@
             },
             "quad_range": [
                 0,
-                21
+                49
             ],
             "param_vector": [],
             "var_table": {},
             "temps": 0
         },
-        "fact": {
-            "datatype": "int",
+        "main": {
+            "datatype": "void",
             "size": {
                 "local": {
-                    "int": 1,
-                    "float": 0,
-                    "bool": 0,
+                    "int": 3,
+                    "float": 1,
+                    "bool": 2,
                     "char": 0,
                     "string": 0
                 },
                 "temp": {
-                    "int": 5,
+                    "int": 8,
                     "float": 0,
-                    "bool": 2,
+                    "bool": 4,
                     "char": 0,
                     "string": 0
                 }
             },
             "quad_range": [
-                1,
-                12
+                null,
+                null
             ],
-            "param_vector": [
-                "int"
-            ],
+            "param_vector": [],
             "var_table": {
-                "fact": {
-                    "datatype": "int",
-                    "scope": "global",
-                    "address": 1000,
-                    "dim": null
-                },
-                "num": {
+                "i": {
                     "datatype": "int",
                     "scope": "local",
                     "address": 6000,
+                    "dim": 0
+                },
+                "arr": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6001,
+                    "dim": 10
+                },
+                "x": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6012,
+                    "dim": 10
+                },
+                "D": {
+                    "datatype": "bool",
+                    "scope": "local",
+                    "address": 8000,
+                    "dim": 0
+                },
+                "E": {
+                    "datatype": "bool",
+                    "scope": "local",
+                    "address": 8001,
+                    "dim": 0
+                },
+                "G": {
+                    "datatype": "float",
+                    "scope": "local",
+                    "address": 7000,
                     "dim": 0
                 },
                 "13000": {
@@ -76,44 +98,23 @@
                     "address": 11000,
                     "dim": null
                 },
+                "13001": {
+                    "datatype": "bool",
+                    "scope": "temp",
+                    "address": 13001,
+                    "dim": null
+                },
+                "11001": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11001,
+                    "dim": null
+                },
                 "11002": {
                     "datatype": "int",
                     "scope": "temp",
                     "address": 11002,
                     "dim": null
-                }
-            },
-            "temps": 3
-        },
-        "main": {
-            "datatype": "void",
-            "size": {
-                "local": {
-                    "int": 1,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                },
-                "temp": {
-                    "int": 3,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                }
-            },
-            "quad_range": [
-                null,
-                null
-            ],
-            "param_vector": [],
-            "var_table": {
-                "a": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6001,
-                    "dim": 0
                 },
                 "11003": {
                     "datatype": "int",
@@ -122,7 +123,7 @@
                     "dim": null
                 }
             },
-            "temps": 1
+            "temps": 6
         }
     },
     "quads": {
@@ -130,129 +131,297 @@
             "oper": "GOTO",
             "left": null,
             "right": null,
-            "res": 13
+            "res": 1
         },
         "1": {
-            "oper": "<=",
+            "oper": "=",
+            "left": 16000,
+            "right": null,
+            "res": 6000
+        },
+        "2": {
+            "oper": "<",
             "left": 6000,
             "right": 16001,
             "res": 13000
         },
-        "2": {
+        "3": {
             "oper": "GOTOF",
             "left": 13000,
             "right": null,
-            "res": 4
-        },
-        "3": {
-            "oper": "RET",
-            "left": 16001,
-            "right": null,
-            "res": 1000
+            "res": 18
         },
         "4": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "fact"
+            "oper": "VER",
+            "left": 6000,
+            "right": 16000,
+            "res": 16001
         },
         "5": {
-            "oper": "-",
-            "left": 6000,
-            "right": 16001,
-            "res": 11000
+            "oper": "[+]",
+            "left": 6012,
+            "right": 6000,
+            "res": 21000
         },
         "6": {
-            "oper": "PARAM",
-            "left": 11000,
-            "right": null,
-            "res": 1
+            "oper": "+",
+            "left": 6000,
+            "right": 16002,
+            "res": 11000
         },
         "7": {
-            "oper": "GOSUB",
-            "left": "fact",
+            "oper": "=",
+            "left": 11000,
             "right": null,
-            "res": 7
+            "res": 21000
         },
         "8": {
-            "oper": "=",
-            "left": 1000,
-            "right": null,
-            "res": 11001
+            "oper": "!=",
+            "left": 6000,
+            "right": 16003,
+            "res": 13001
         },
         "9": {
-            "oper": "*",
-            "left": 6000,
-            "right": 11001,
-            "res": 11002
+            "oper": "GOTOF",
+            "left": 13001,
+            "right": null,
+            "res": 15
         },
         "10": {
+            "oper": "VER",
+            "left": 6000,
+            "right": 16000,
+            "res": 16001
+        },
+        "11": {
+            "oper": "[+]",
+            "left": 6001,
+            "right": 6000,
+            "res": 21001
+        },
+        "12": {
+            "oper": "+",
+            "left": 6000,
+            "right": 16002,
+            "res": 11001
+        },
+        "13": {
+            "oper": "*",
+            "left": 11001,
+            "right": 16004,
+            "res": 11002
+        },
+        "14": {
             "oper": "=",
             "left": 11002,
             "right": null,
-            "res": 6000
-        },
-        "11": {
-            "oper": "RET",
-            "left": 6000,
-            "right": null,
-            "res": 1000
-        },
-        "12": {
-            "oper": "ENDFUNC",
-            "left": null,
-            "right": null,
-            "res": null
-        },
-        "13": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "fact"
-        },
-        "14": {
-            "oper": "+",
-            "left": 16002,
-            "right": 16003,
-            "res": 11003
+            "res": 21001
         },
         "15": {
-            "oper": "PARAM",
-            "left": 11003,
-            "right": null,
-            "res": 1
+            "oper": "+",
+            "left": 6000,
+            "right": 16002,
+            "res": 11003
         },
         "16": {
-            "oper": "GOSUB",
-            "left": "fact",
+            "oper": "=",
+            "left": 11003,
             "right": null,
-            "res": 16
+            "res": 6000
         },
         "17": {
-            "oper": "=",
-            "left": 1000,
-            "right": null,
-            "res": 11004
-        },
-        "18": {
-            "oper": "=",
-            "left": 11004,
-            "right": null,
-            "res": 6001
-        },
-        "19": {
-            "oper": "WRITE",
+            "oper": "GOTO",
             "left": null,
             "right": null,
-            "res": 6001
+            "res": 2
+        },
+        "18": {
+            "oper": "VER",
+            "left": 16003,
+            "right": 16000,
+            "res": 16001
+        },
+        "19": {
+            "oper": "[+]",
+            "left": 6001,
+            "right": 16003,
+            "res": 21002
         },
         "20": {
+            "oper": "=",
+            "left": 16005,
+            "right": null,
+            "res": 21002
+        },
+        "21": {
             "oper": "WRITE",
             "left": null,
             "right": null,
             "res": 20000
         },
-        "21": {
+        "22": {
+            "oper": "MAX",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "23": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "24": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "25": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20002
+        },
+        "26": {
+            "oper": "MIN",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "27": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "28": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "29": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20003
+        },
+        "30": {
+            "oper": "MEAN",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "31": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "32": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "33": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20004
+        },
+        "34": {
+            "oper": "MODE",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "35": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "36": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "37": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20005
+        },
+        "38": {
+            "oper": "MEDIAN",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "39": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "40": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "41": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20006
+        },
+        "42": {
+            "oper": "VARIANCE",
+            "left": 6001,
+            "right": 10,
+            "res": 11004
+        },
+        "43": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 11004
+        },
+        "44": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20001
+        },
+        "45": {
+            "oper": "PLOTXY",
+            "left": 6012,
+            "right": 10,
+            "res": null
+        },
+        "46": {
+            "oper": "PLOTXY",
+            "left": 6012,
+            "right": 10,
+            "res": 11004
+        },
+        "47": {
+            "oper": "REGRESSION",
+            "left": 6012,
+            "right": 10,
+            "res": null
+        },
+        "48": {
+            "oper": "REGRESSION",
+            "left": 6012,
+            "right": 10,
+            "res": 11004
+        },
+        "49": {
             "oper": "ENDPROG",
             "left": null,
             "right": null,
@@ -262,14 +431,22 @@
     "const_table": {
         "int": {
             "0": 16000,
-            "1": 16001,
-            "2": 16002,
-            "3": 16003
+            "10": 16001,
+            "1": 16002,
+            "5": 16003,
+            "2": 16004,
+            "20": 16005
         },
         "float": {},
         "char": {},
         "string": {
-            "\\n": 20000
+            "max: ": 20000,
+            "\\n": 20001,
+            "min: ": 20002,
+            "mean: ": 20003,
+            "mode: ": 20004,
+            "median: ": 20005,
+            "varaince: ": 20006
         },
         "bool": {}
     }

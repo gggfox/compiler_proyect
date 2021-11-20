@@ -1,0 +1,27 @@
+program MyRlike; 
+
+main(){
+    vars {
+        int: i,arr[10],x[10];
+        bool: D,E;
+        float: G;
+    }
+    i = 0;
+    while(i<10){
+        x[i] = i+1;
+         if (i != 5){
+            arr[i] = (i+1)*2;
+        }
+        i+=1;
+    }
+    arr[5] = 20;
+    write("max: ",max(arr),"\n");
+    write("min: ",min(arr),"\n");
+    write("mean: ",mean(arr),"\n");
+    write("mode: ",mode(arr),"\n");
+    write("median: ",median(arr),"\n");
+    write("varaince: ",variance(arr),"\n");
+
+    plotxy(x,x);
+    regression(x,x);
+}

@@ -35,12 +35,12 @@ reserved = {
     'mean' : 'MEAN',
     'variance' : 'VARIANCE',
     'regression' : 'REGRESSION',
-    'plotXY' : 'PLOT_XY',
+    'plotxy' : 'PLOTXY',
     'max' : 'MAX',
     'min' : 'MIN',
-    'sum' : 'SUM',
     'and' : 'AND',
-    'or' : 'OR'
+    'or' : 'OR',
+    'len':'LEN'
 }
 
 
@@ -90,7 +90,7 @@ t_DIV = r'\/'
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_REMAINDER = r'\%'
-t_EXP = r'\*\*'
+t_EXP = r'\^'
 t_MULT_EQ = r'\*\='
 t_DIV_EQ = r'\/\='
 t_PLUS_EQ = r'\+\='

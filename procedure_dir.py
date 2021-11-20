@@ -12,19 +12,7 @@
 from tabulate import tabulate
 from semanticCube import SemanticCube
 from memory_architecture import memory
-'''
-    PROCEDURE DIRECTORY
-    -------------------
-    name      -> name of the procedure
-    datatype  -> datatype of the procedure 
-    size      -> memory size of the procedure
-    params    -> a vector of the datatypes expected by the params
-    var_table -> a table of all the variables in the procedure.
 
-    VARIABLE TABLE
-    --------------
-
-'''
 class procedure_dir():
     def __init__(self):
         self.curr_proc = ''
@@ -67,8 +55,8 @@ class procedure_dir():
     '''
     def gen_temp(self, operator:str, operand1:str, operand2:str) -> str:
         try:
-            var1 = self.get_var_datatype(operand1)
-            var2 = self.get_var_datatype(operand2)
+            var1 = self.get_addr_datatype(operand1)
+            var2 = self.get_addr_datatype(operand2)
 
 
             # Catch cte ints and floats
@@ -77,12 +65,20 @@ class procedure_dir():
             if var2 == 'ERROR':
                 [_,var2,_] = str(type(operand2)).split('\'')
 
+            if var1 in ["string","char"] and var2 in ["int","float","bool"]:
+                operand2 = str(operand2)
+                var2 = var1
+
+            if var2 in ["string","char"] and var1 in ["int","float","bool"]:
+                operand1 = str(operand1)
+                var1 = var2
 
             # print(operand1,operand2)
             # print(operator,var1,var2)
             #self.print_var_tables()
             #print(operator,var1,var2,operand1,operand2)
             temp_datatype = SemanticCube[operator][var1][var2]
+            #print(temp_datatype,var1,var2)
             self.add_temp(temp_datatype)    
             temp = 'temp'+str(self.get_curr_temp())   
             addr = self.memory['temp']['curr_addr'][temp_datatype]
@@ -90,6 +86,7 @@ class procedure_dir():
             self.add_variable(addr, temp_datatype, addr, 'temp')
             return addr
         except:
+            print(operand1,operand2)
             raise TypeError('undefined variable')
 
     def gen_ptr(self)->int:
@@ -135,13 +132,24 @@ class procedure_dir():
         datatype = self.procedures[proc_name]['datatype']
         return datatype
 
-    def get_func_return_addr(self) -> int:
-        proc_datatype = self.procedures[self.curr_proc]['datatype']
-        if proc_datatype == 'void' and not self.curr_proc in ['program','main']:
+    def get_func_return_addr(self,func_name:str ='') -> int:
+        if func_name == '':
+            func_name = self.curr_proc
+        else:
+            proc = self.procedures.get(func_name)
+            var = proc['var_table'].get(func_name)
+            if var != None:
+                return var['address']
+        proc = self.procedures.get(func_name)
+        proc_datatype = proc['datatype']
+
+        if proc_datatype == 'void':
+            return None
             raise TypeError('void dosent return a value')
         func = self.func_call
         if func == '':
             func = self.curr_proc
+
         res = self.procedures[func]['var_table'][func]['address']
         return res
         
@@ -366,12 +374,27 @@ class procedure_dir():
         
     '''
     '''
-    def get_var_datatype(self, var_name:str, proc_name:str = '') -> str:
+    def get_addr_datatype(self, addr:int) -> str:
+        """returns the datatype for a given address
+
+        Args:
+            addr (int): address number
+
+        Returns:
+            str: datatype
+        """
         try:
-            [proc_name] = [self.curr_proc if proc_name == '' else proc_name]
-            procs = self.procedures
-            dt = procs[proc_name]['var_table'][var_name]['datatype']
-            return dt    
+            base = addr - addr%1000
+            if base in [1000,6000,11000,16000,21000]:
+                return 'int'
+            elif base in [2000,7000,12000,17000]:
+                return 'float'
+            elif base in [3000,8000,13000,18000]:
+                return 'bool'
+            elif base in [4000,9000,14000,19000]:
+                return 'char'
+            elif base in [5000,10000,15000,20000]:
+                return 'string'
         except:
             return 'ERROR'
 
@@ -405,7 +428,7 @@ class procedure_dir():
     '''
     def exist_global_var(self, var_name):
         try:
-            if self.procedure['program']['var_table'][var_name]:
+            if self.procedure['program']['var_table'].get(var_name):
                 return True
         except:
             return False

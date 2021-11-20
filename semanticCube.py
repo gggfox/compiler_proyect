@@ -1,7 +1,7 @@
 Error:str = 'type mismatch'
 
 SemanticCube = {
-    '**':{
+    '^':{
         'int':{
             'int':'int',
             'float':'float',
@@ -69,6 +69,43 @@ SemanticCube = {
         },
         'string':{
             'int':'string',
+            'float':Error,
+            'char': Error,
+            'bool': Error,
+            'string': Error,
+        },
+    },
+        '%':{
+        'int':{
+            'int':'int',
+            'float':'float',
+            'char': Error,
+            'bool': Error,
+            'string': Error,
+        },
+        'float':{
+            'int':'float',
+            'float':'float',
+            'char': Error,
+            'bool': Error,
+            'string': Error,
+        },
+        'char':{
+            'int':Error,
+            'float':Error,
+            'char': Error,
+            'bool': Error,
+            'string': Error,
+        },
+        'bool':{
+            'int':Error,
+            'float':Error,
+            'char': Error,
+            'bool': Error,
+            'string': Error,
+        },
+        'string':{
+            'int':Error,
             'float':Error,
             'char': Error,
             'bool': Error,

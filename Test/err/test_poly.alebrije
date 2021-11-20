@@ -1,5 +1,5 @@
-# Should raise a ValueError, 
-# because the name of a function is repeated
+    // # Should raise a ValueError, 
+    // # because the name of a function is repeated
 program MyRlike;
 
 function int one(){

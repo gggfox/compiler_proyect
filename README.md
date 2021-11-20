@@ -52,9 +52,10 @@ python parser.py test_if.alebrije
 
 ## Semana #7(Nov15-Nov19)
 -[ ] 1era version de la Documentacion
--[ ] Generacion de Codigo y Maquina Virtual para una parte de la aplicacion particular
+-[X] Generacion de Codigo y Maquina Virtual para una parte de la aplicacion particular
 -[X] Maquina Virtual: Ejecucion de Modulos 
 -[X] Maquina Virtual: Ejecucion de Arreglos
+-[ ] pruebas
 
 ## Semana #8 (Nov22-Nov24) FINAL
 -[ ] Entregua final del proyecto NOV. 24, 12:00PM

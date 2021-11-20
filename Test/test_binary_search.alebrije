@@ -1,0 +1,71 @@
+program MyRlike; 
+vars{
+    int: array[15];
+}
+
+function void set_array(){
+    vars{
+        int: i;
+    }
+    array[0] = 0;
+    for i=1 to len(array) - 1{
+      array[i] = 2^(i - 1);
+    }
+}
+
+function int aux_binary_search(int: target, int: low, int: high){
+    vars{
+        int: mid;
+    }
+    if(low <= high){
+        mid = low + (high - low) / 2;
+        if(array[mid] == target){
+            return(mid);
+        }
+
+        if(array[mid] > target){
+            return(aux_binary_search(target,low, mid - 1));
+        }
+        if(array[mid] < target){
+            return(aux_binary_search(target,mid + 1, high));
+        }else{
+            return(-1);
+        }
+    }
+    return(-1);
+}
+
+function int binary_search(int: target){
+    vars{
+        int: linf,lsup,res;
+    }
+    linf = 0;
+    lsup = len(array) - 1;
+    res = aux_binary_search(target,linf,len(array));
+    return(res);
+}
+
+
+
+
+main(){
+    vars{
+        int: r,res;
+    }
+    set_array();
+    // for r=0 to 15{
+    //      write(r,":",array[r],"\n");
+    // }
+    r = 3;
+    res = binary_search(r);
+    write("res ",res,"\n");   
+    if(res == -1){
+        write("the number isn't in the array","\n");
+    }else{
+        if(r == array[res]){
+           write("success!!!","\n");
+           write(r,"==",array[res],"\n");
+        }
+    }
+
+}
