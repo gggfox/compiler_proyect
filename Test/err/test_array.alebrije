@@ -1,0 +1,14 @@
+program MyRlike; 
+
+    // testing varaible dataype mismatch
+
+
+main(){
+    vars {
+        int: array[20];
+        
+    }
+    array[1] = 5;
+    write(array[1.1]);
+
+}

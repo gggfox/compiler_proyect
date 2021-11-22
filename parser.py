@@ -9,15 +9,16 @@
 #############################
 '''
 import sys
-import json
 import procedure_dir
 import ply.yacc as yacc
 from lexer import tokens, lexer
 from stack import Stack
+from obj import OBJ
 from vm import VM
 
 proc_dir = procedure_dir.procedure_dir()
 stack = Stack()
+obj = OBJ()
 
 
 def p_program(p):
@@ -48,7 +49,10 @@ def p_vars(p):
 
 def p_function(p):
     '''
-    function : FUNCTION func_type ID np_set_curr_proc L_PAR params R_PAR np_set_quad_start vblock np_ENDFunc 
+    function : FUNCTION func_type ID np_set_curr_proc L_PAR functionB R_PAR np_set_quad_start vblock np_ENDFunc 
+
+    functionB : params
+              | empty
     '''
 
 
@@ -173,7 +177,7 @@ def p_loop_cond(p):
 
 def p_loop_range(p):
     '''
-    loop_range : FOR var EQUAL np_push_operator exp np_set_VC TO exp np_end np_comp_VC_VF block np_GOTO_FOR
+    loop_range : FOR var EQUAL np_push_operator exp np_set_CV TO exp np_end np_comp_CV_FV block np_GOTO_FOR
     '''
 
 
@@ -185,26 +189,33 @@ def p_return(p):
 
 def p_func_call(p):
     '''
-    func_call : ID np_ERA L_PAR func_call_arguments R_PAR np_GOSUB
+    func_call : ID np_ERA L_PAR func_callB R_PAR np_GOSUB
+
+    func_callB : func_call_arguments
+                | empty
     '''
     
 def p_func_call_arguments(p):
     '''
-    func_call_arguments : np_stop exp np_end np_param
-                        | np_stop exp np_end np_param COMMA func_call_arguments
-                        | empty
+    func_call_arguments : np_stop exp np_end np_param func_call_argumentsB
+
+    func_call_argumentsB : COMMA func_call_arguments
+                         | empty
     '''
 
 def p_def_func(p):
     '''
-    def_func : MIN L_PAR ID  R_PAR np_def_func_1param
-            | MAX L_PAR ID  R_PAR np_def_func_1param
-            | MEAN L_PAR ID R_PAR np_def_func_1param
-            | MEDIAN L_PAR ID  R_PAR np_def_func_1param
-            | MODE L_PAR ID R_PAR np_def_func_1param
-            | VARIANCE L_PAR ID R_PAR np_def_func_1param
-            | LEN L_PAR ID R_PAR np_def_func_1param
+    def_func : def_funcB L_PAR ID  R_PAR np_def_func_1param
+    
+    def_funcB : MIN
+              | MAX
+              | MEAN
+              | MEDIAN
+              | MODE
+              | VARIANCE
+              | LEN
     '''
+    p[0] = p[1]
 
 def p_oper_assign(p):
     '''
@@ -307,13 +318,13 @@ def p_empty(p):
     empty :
     '''
     """
-    acts a s epsilon in the GRAMMAR
+    acts a s epsilon inside the GRAMMAR
     """
 
 quadruples = []
 
 
-def gen_assign(vc: bool = False) -> None:
+def gen_assign(cv: bool = False) -> None:
     """generates an assign quadruple
 
     Args:
@@ -322,7 +333,7 @@ def gen_assign(vc: bool = False) -> None:
     """
     (operand1, operand2) = stack.get_RL_operands()
     quadruples.append(('=', operand1, None, operand2))
-    if vc:
+    if cv:
         stack.operands.append(operand2)
 
 
@@ -342,15 +353,9 @@ def gen_quad(oper: str) -> None:
 #######################
 
 
-'''
-neural point that changes the current procedure to either 
-program, main or a function/module
-'''
-
-
 def p_np_set_curr_proc(p):
     'np_set_curr_proc : '
-    """changes curren procedure
+    """changes current procedure
 
     Raises:
         TypeError: [description]
@@ -361,18 +366,15 @@ def p_np_set_curr_proc(p):
     elif(proc_dir.curr_proc != func_name):
         proc_dir.set_curr_proc(func_name, proc_datatype=p[-2])
     else:
-        raise TypeError('Missing type for function: ', func_name)
-
-
-'''
-adds operator to operator stack, and creates quadruple in case the current
-operator has less or equal priority to the last operator in the operator stack
-'''
+        msg = 'Missing type for function: "{0}"'.format(func_name)
+        raise TypeError(msg)
 
 
 def p_np_push_operator(p):
     'np_push_operator : '
-
+    """adds operator to operator stack, and creates quadruple if the current
+    operator has less or equal priority to the last operator in the operator stack
+    """
     while len(stack.operators) > 0 and stack.top(stack.operators) != '(' and stack.priority(stack.operators[-1]) > stack.priority(p[-1]):
         oper = stack.operators.pop()
         if oper == '=':
@@ -382,161 +384,126 @@ def p_np_push_operator(p):
     stack.operators.append(p[-1])
 
 
-'''
-pushes operand to stack and adds it to the variable table
-'''
-
-
 def p_np_push_operand(p):
     'np_push_operand : '
+    """pushes operand to the operand stack and adds 
+    it to the variable table of the current procedure
+    """
     addr = proc_dir.get_var_addr(p[-1])
     stack.operands.append(addr)
 
 
-'''
-pushes constant int to the operand stack and adds it to the constant table
-'''
-
-
 def p_np_push_cte_int(p):
     'np_push_cte_int : '
+    """pushes constant int to the operand 
+    stack and adds it to the constant table
+    """
     addr = proc_dir.add_const(int(p[-1]), 'int')
     stack.operands.append(addr)
 
 
-'''
-pushes constant float to the operand stack and adds it to the constant table
-'''
-
-
 def p_np_push_cte_float(p):
     'np_push_cte_float : '
+    """pushes constant float to the operand 
+    stack and adds it to the constant table
+    """
     addr = proc_dir.add_const(float(p[-1]), 'float')
     stack.operands.append(addr)
 
 
-'''
-pushes constant char to the operand stack and adds it to the constant table
-'''
-
-
 def p_np_push_cte_char(p):
     'np_push_cte_char : '
+    """pushes constant char to the operand 
+    stack and adds it to the constant table
+    """
     addr = proc_dir.add_const(p[-1], 'char')
     stack.operands.append(addr)
 
 
-'''
-pushes constant string to the operand stack and adds it to the constant table
-'''
-
-
 def p_np_push_cte_str(p):
     'np_push_cte_str : '
+    """pushes constant string to the operand 
+    stack and adds it to the constant table
+    """
     addr = proc_dir.add_const(p[-1], 'string')
     stack.operands.append(addr)
 
 
-'''
-pushes constant bool to the operand stack and adds it to the constant table
-'''
-
-
 def p_np_push_cte_bool(p):
     'np_push_cte_bool : '
+    """pushes constant bool to the operand 
+    stack and adds it to the constant table
+    """
     addr = proc_dir.add_const(p[-1], 'bool')
     stack.operands.append(addr)
 
 
-'''
-saves last datatype used, in case of multiple in declarations in a single line
-example: 'int: a, b, c;'
-'''
-
-
 def p_np_set_curr_datatype(p):
     'np_set_curr_datatype : '
+    """Saves last datatype used, in case of multiple 
+    in declarations in a single line, example: 'int: a, b, c;'
+    """
     proc_dir.curr_datatype = p[-1]
-
-
-'''
-appends datatype to stack
-'''
 
 
 def p_np_add_datatype(p):
     'np_add_datatype : '
-    # If the datatype is a comma this means it has
-    #  the same datatype as the previous option
+    """appends datatype to datatype stack. In the datatype is a 
+    comma the last datatype used will be pushed instead.
+    """
     if p[-1] == ',':
         stack.datatypes.append(stack.datatypes[len(stack.datatypes) - 1])
     else:
         stack.datatypes.append(p[-1])
 
 
-'''
-adds variable to the varibale table of the current function
-'''
-
-
 def p_np_add_var(p):
     'np_add_var : '
-    proc_dir.add_variable(
-        var_name=p[-1], datatype=proc_dir.curr_datatype, dim=None)
-
-
-'''
-'''
+    """adds variable to the varibale table of the current function
+    """
+    datatype=proc_dir.curr_datatype
+    proc_dir.add_variable(var_name=p[-1], datatype=datatype, dim=None)
 
 
 def p_np_add_arr(p):
     'np_add_arr : '
-    proc_dir.add_variable(
-        var_name=p[-4], datatype=proc_dir.curr_datatype, dim=p[-2])
-
-
-'''
-updates the current function.
-example: program, func_name, main
-'''
-# def p_np_set_curr_scope(p):
-#     'np_set_curr_scope : '
-#     proc_dir.curr_scope = p[-1]
-
-'''
-creates quadruples unitl it finds a left parenthesis on the operator stack
-'''
+    """Adds an array to the varaible table of the current procedure
+    """
+    datatype=proc_dir.curr_datatype
+    proc_dir.add_variable(var_name=p[-4], datatype=datatype, dim=p[-2])
 
 
 def p_np_rpar(p):
     'np_rpar : '
+    """will generates quadruples until it finds a left parenthesis
+    """
     oper = stack.operators.pop()
     while oper != '(':
         gen_quad(oper)
         oper = stack.operators.pop()
 
 
-'''
-'''
-
-
 def p_np_set_return(p):
     'np_set_return : '
+    """Generats a RETURN quadruple
+    """
+    if proc_dir.curr_proc in ["main","program"]:
+        raise SyntaxError("Procedures main or program can't have a return statement")
     operand = stack.operands.pop()
     datatype = proc_dir.get_curr_proc_datatype
     func_name = proc_dir.curr_proc
     addr = proc_dir.get_func_return_addr(func_name)
-    #print(func_name,addr)
+
+    if operand == None:
+        msg = f"function {func_name} returns a non existant value"
+        raise ValueError(msg)
     quadruples.append(('RET', operand, None, addr))
-
-
-'''
-creates quadruples until the operator stack is empty
-'''
 
 
 def p_np_end(p):
     'np_end : '
+    """Generates quadruples until the operator stack is empty or finds a stop
+    """
     while len(stack.operators) > 0:
         oper = stack.operators.pop()
         if oper == 'stop':
@@ -552,91 +519,76 @@ def p_np_end(p):
             gen_quad(oper)
 
 
-'''
-
-'''
-
-
 def p_np_read(p):
     'np_read : '
+    """generates a READ quadruple
+    """
     addr = stack.operands.pop()
+    if addr == None:
+        raise ValueError("Trying to read non existant variable")
     quadruples.append(('READ', None, None, addr))
-
-
-'''
-
-'''
 
 
 def p_np_write(p):
     'np_write : '
+    """generates a WRITE quadruple
+    """
     operand = stack.operands.pop()
+    if operand == None:
+        raise ValueError("Trying to write non existant value")
     quadruples.append(('WRITE', None, None, operand))
 
 
-'''
-
-'''
-
-
-def p_np_set_VC(p):
-    'np_set_VC : '
+def p_np_set_CV(p):
+    'np_set_CV : '
+    """sets the control variable of a for loop
+    """
     while len(stack.operators) > 0:
         oper = stack.operators.pop()
         if oper == '=':
-            gen_assign(vc=True)
+            gen_assign(cv=True)
         else:
             gen_quad(oper)
 
 
-'''
-
-'''
-
-
-def p_np_comp_VC_VF(p):
-    'np_comp_VC_VF : '
-    (vf, vc) = stack.get_RL_operands()
-    temp = proc_dir.gen_temp('<', vf, vc)
-    quadruples.append(('<', vc, vf, temp))
-    stack.operands.append(vc)
+def p_np_comp_CV_FV(p):
+    'np_comp_CV_FV : '
+    """creates quadruples to compare the control variable to the final value
+    """
+    (fv, cv) = stack.get_RL_operands()
+    temp = proc_dir.gen_temp('<', fv, cv)
+    quadruples.append(('<', cv, fv, temp))
+    stack.operands.append(cv)
     stack.jumps.append(len(quadruples)-1)
     quadruples.append(('GOTOF', temp, None, None))
     stack.jumps.append(len(quadruples)-1)
 
 
-# GOTO's
-'''
-Add's a GOTO to the quadruples and the number of the quadruple 
-to the jump stack
-'''
-
-
 def p_np_GOTO(p):
     'np_GOTO : '
+    """Add's a GOTO quadruple to the quadruple list and
+    the number of the current quadruple to the jump stack
+    """
     stack.jumps.append(len(quadruples))
     quadruples.append(('GOTO', None, None, None))
 
 
-'''
-creates gotoF quadruple, it jumps to the position in case
-'''
-
 
 def p_np_GOTOF(p):
     'np_GOTOF : '
+    """ pushes GOTOF quadruple to the quadrule list,
+    and pushes current quadruple number to the jump stack
+    """
     cond = stack.operands.pop()
     stack.jumps.append(len(quadruples))
     quadruples.append(('GOTOF', cond, None, None))
 
 
-'''
-settle the IF GOTOF, add GOTOF quad and position to jump stack
-'''
-
-
 def p_np_GOTO_ELSE(p):
     'np_GOTO_ELSE : '
+    """close the IF GOTOF, add GOTO quadruple 
+    and current cuadruple number to jump stack
+    """
     goto_index = stack.jumps.pop()
     stack.jumps.append(len(quadruples))
     (a, b, c, d) = quadruples[goto_index]
@@ -644,27 +596,20 @@ def p_np_GOTO_ELSE(p):
     quadruples[goto_index] = (a, b, c, len(quadruples))
 
 
-'''
-Add's a the number of the quadruple a GOTO
-must got to
-'''
-
-
 def p_np_GOTO_END(p):
     'np_GOTO_END : '
+    """Add's a the number of the quadruple a GOTO must lead to
+    """
     goto_index = stack.jumps.pop()
     (a, b, c, d) = quadruples[goto_index]
     quadruples[goto_index] = (a, b, c, len(quadruples))
 
 
-'''
-adds GOTO to the comparison quad before the GOTOF of the while cycle
-and sets where the GOTOF ends
-'''
-
-
 def p_np_GOTO_WHILE(p):
     'np_GOTO_WHILE : '
+    """adds GOTO to the comparison quad before the GOTOF of the while cycle
+    and sets where the GOTOF ends
+    """
     goto_index = stack.jumps.pop()
     pre_expression = stack.jumps.pop()
     quadruples.append(('GOTO', None, None, pre_expression))
@@ -672,12 +617,12 @@ def p_np_GOTO_WHILE(p):
     quadruples[goto_index] = (a, b, c, len(quadruples))
 
 
-'''
-'''
-
-
 def p_np_GOTO_FOR(p):
     'np_GOTO_FOR : '
+    """Generates a SUM and ASSIGN quadruples to increase the value of the 
+    control varaible at the end of the for loop, then it generates a GOTO 
+    to the expression that compares the control variable to the final value
+    """
     var = stack.operands.pop()
     addr = proc_dir.add_const(var_name=1, datatype='int')
     temp = proc_dir.gen_temp('+', addr, var)
@@ -686,62 +631,52 @@ def p_np_GOTO_FOR(p):
     quadruples.append(('=', temp, None, var))
 
     goto_index = stack.jumps.pop()
-    comp_vc_vf = stack.jumps.pop()
-    quadruples.append(('GOTO', None, None, comp_vc_vf))
+    comp_cv_fv = stack.jumps.pop()
+    quadruples.append(('GOTO', None, None, comp_cv_fv))
     (a, b, c, d) = quadruples[goto_index]
     quadruples[goto_index] = (a, b, c, len(quadruples))
 
 
-'''
-adds a checkpoint in the jump stack for the expression in a while loop
-'''
-
-
 def p_np_CHECKPOINT(p):
     'np_CHECKPOINT : '
+    """adds a checkpoint in the jump stack, so that the while 
+    loop can return to the expression at the end of the loop
+    """
     stack.jumps.append(len(quadruples))
-
-# FUNCTION CONTROL
-# function calls must validate function name,
-# of arguments and their datatypes
-# function must create a space in local memory (variables, )
-
-
-'''
-'''
 
 
 def p_np_add_param(p):
     'np_add_param : '
+    """Adds a param and a datatype to the current function
+    """
+
     proc_dir.add_param(param_name=p[-1], datatype=p[-3])
-
-
-'''
-'''
 
 
 def p_np_set_quad_start(p):
     'np_set_quad_start : '
+    """sets the quadruple where the current function starts
+    """
     proc_dir.set_quad_start(len(quadruples))
-
-
-'''
-'''
 
 
 def p_np_GOSUB(p):
     'np_GOSUB : '
-    # jump that changes instruction pointer to a specific line of code
+    """Adds a GOSUB of a given function quadruple to the quadruple list.
+    In case the function isn't void it assigns a temporal var the value of
+    the global variable belonging to the function
+
+    Raises:
+        ValueError: in case the number of parameters and argk dont match
+    """
     func_name = p[-5]
     argk = proc_dir.get_curr_arg_k() - 1
-    if argk != proc_dir.get_param_num(func_name=p[-5]):
-        raise ValueError('ERROR the number of arguments don`t match the number of params')
+    if argk != proc_dir.get_param_len(func_name):
+        msg = 'The number of arguments doesn`t match the number of parameters'
+        raise ValueError(msg)
 
-    init_address = len(quadruples)
-    quadruples.append(('GOSUB', func_name, None, init_address))
-
-    # generate temporal and assign it the value of the
-    # return of the function unless function is void
+    current_address = len(quadruples)
+    quadruples.append(('GOSUB', func_name, None, current_address))
 
     datatype = proc_dir.get_proc_datatype(func_name)
     if(datatype != 'void'):
@@ -749,105 +684,90 @@ def p_np_GOSUB(p):
         proc_dir.memory['temp']['curr_addr'][datatype] += 1
         addr = proc_dir.get_func_return_addr(func_name)
         quadruples.append(('=', addr, None, temp))
-        #proc_dir.add_variable(temp, datatype)
         proc_dir.add_temp(datatype)
         stack.operands.append(temp)
 
 
-'''
-adds ERA quadruple, for calculating function memory size at run time
-'''
-
-
 def p_np_ERA(p):
     'np_ERA : '
-    if proc_dir.exist_proc(proc_name=p[-1]):
-        func_name = p[-1]
+    """adds ERA quadruple, for calculating function memory size at run time
+
+    Raises:
+        ValueError: In case the function is undefined
+    """
+    func_name = p[-1]
+    if proc_dir.procedures.get(func_name) != None:
         proc_dir.func_call = func_name
         quadruples.append(('ERA', None, None, func_name))
         proc_dir.reset_curr_arg_k()
     else:
-        msg = 'ERROR undefined Function: "{0}"'.format(p[-1])
+        msg = 'Undefined function: "{0}"'.format(func_name)
         raise ValueError(msg)
         p_error(p)
 
 
-'''
-creates param quadruple
-'''
-
-
 def p_np_param(p):
     'np_param : '
-    arg = stack.operands.pop()
+    """generates a PARAM quadruple 
+    """
+    argument = stack.operands.pop()
+    if argument == None:
+        raise ValueError("Function argument doesn't exist")
     argk = proc_dir.get_curr_arg_k()
-    quadruples.append(('PARAM', arg, None, argk))
-
-
-'''
-borra memoria temporal que se uso para ejecutar la funcion
-'''
+    quadruples.append(('PARAM', argument, None, argk))
 
 
 def p_np_ENDFunc(p):
     'np_ENDFunc : '
+    """pushes a ENDFUNC quadruple to the quadruple list
+    """
     quadruples.append(('ENDFUNC', None, None, None))
-    proc_dir.set_quad_end(len(quadruples) - 1)
     proc_dir.reset_local_and_temp()
-
-
-'''
-adds a stop in the operator stack, to stop evaluating the expression
-'''
-
 
 
 def p_np_arr_end(p):
     'np_arr_end : '
+    """neural point for the end of arrays it generates a Verify index 
+    quadruple (VER, index, upper_lim, lower_lim). Then it generates a 
+    quadruple that generates a pointer that points to the base address + index
+    """
     index = stack.operands.pop()
     dirB = proc_dir.get_var_addr(var_name=p[-5])
     var_dim = proc_dir.get_var_dim(var_name=p[-5])
-    linf = proc_dir.add_const(0, datatype='int')
-    lsup = proc_dir.add_const(var_dim, datatype='int')
+    llim = proc_dir.add_const(0, datatype='int')
+    ulim = proc_dir.add_const(var_dim, datatype='int')
     addr = proc_dir.get_var_addr(var_name=p[-5])
-    datatype = proc_dir.get_addr_datatype(addr)
-
-    # necesito generar una direcion que sea
-    # igual a la suma de la direcion base y el indice
-    # y ponerla en mi stack te operadores
-    #print(dirB,var_dim, linf, index,datatype)
-    quadruples.append(('VER', index, linf, lsup))
+    
+    index_datatype = proc_dir.get_addr_datatype(index)
+    if index_datatype != 'int':
+        raise ValueError('Array index must be a integer value')
+    quadruples.append(('VER', index, llim, ulim))
     ptr = proc_dir.gen_ptr()
-
     quadruples.append(('[+]', dirB, index, ptr))
-    #print('index', index, var_dim)
     stack.operands.append(ptr)
-    # print(p[-5],dirB,index)
-
-    # gen_quad(oper='+')
 
 
-'''
-'''
 def p_np_stop(p):
-    'np_stop : '
+    'np_stop : '    
+    """Adds a 'stop' operator to the operator stack,
+    this is for stoping the evaluation of an expression
+    """
     stack.operators.append('stop')
 
 
-'''
-'''
 def p_np_prog_end(p):
     'np_prog_end : '
-    proc_dir.procedures['program']['quad_range'] = [0, len(quadruples)]
+    """Adds a quadruple that indicates the end
+    of the program
+    """
     quadruples.append(('ENDPROG', None, None, None))
 
 def p_np_def_func_1param(p):
     'np_def_func_1param : ' 
     """
-    neural point for working with predefined functions that have only
+    neural point for working with predefined functions that have exactly
     1 parameter
     """
-    
     oper = p[-4].upper()
     addr = proc_dir.get_var_addr(p[-2])
     dim = proc_dir.get_var_dim(var_name=p[-2])
@@ -856,50 +776,30 @@ def p_np_def_func_1param(p):
     quadruples.append((oper,addr,dim,temp))
     stack.operands.append(temp)
 
+
 def p_np_def_func_2param(p):
     'np_def_func_2param : '
-    oper = p[-6].upper()
+    """neural point for predefined functions that have exactly 
+    2 parameters
+    """
+    func_name = p[-6]
+    oper = func_name.upper()
     addr1 = proc_dir.get_var_addr(var_name=p[-4])
     addr2 = proc_dir.get_var_addr(var_name=p[-2])
     dim1 = proc_dir.get_var_dim(var_name=p[-4])
     dim2 = proc_dir.get_var_dim(var_name=p[-2])
-    datatype = proc_dir.get_addr_datatype(addr1)
-
-    temp = proc_dir.memory['temp']['curr_addr'][datatype]
-
+    datatype1 = proc_dir.get_addr_datatype(addr1)
+    datatype2 = proc_dir.get_addr_datatype(addr2)
+    invalid_types = ['bool','char','string']
+    if datatype1 in invalid_types or datatype2 in invalid_types:
+        msg = f"function {func_name} only accepts arrays of int's or float's"
+        raise TypeError(msg)
     quadruples.append((oper,addr1,dim1,None))
-    quadruples.append((oper,addr2,dim2,temp))
-    stack.operands.append(temp)
-    # print(oper,p[-4],p[-2])
+    quadruples.append((oper,addr2,dim2,None))
+   
 
 # Build the parser
 parser = yacc.yacc()
-
-
-def print_quadruples() -> None:
-    for index, quad in enumerate(quadruples):
-        (a, b, c, d) = quad
-        [a] = ['_' if a == None else a]
-        [b] = ['_' if b == None else b]
-        [c] = ['_' if c == None else c]
-        [d] = ['_' if d == None else d]
-        print('{0}:\t({1},{2},{3},{4})'.format(index, a, b, c, d))
-
-
-def quad_to_json(quadruples):
-    obj = {'proc_dir': {}, 'quads': {}, 'const_table': {}}
-    for index, quad in enumerate(quadruples):
-        (a, b, c, d) = quad
-        obj['quads'][index] = {'oper': a, 'left': b, 'right': c, 'res': d}
-    obj['proc_dir'] = proc_dir.procedures
-    obj['const_table'] = proc_dir.const_table
-    return json.dumps(obj, indent=4)
-
-
-def gen_obj_code(quadruples) -> None:
-    json_object = quad_to_json(quadruples)
-    with open('code.json', 'w') as outfile:
-        outfile.write(json_object)
 
 
 if __name__ == '__main__':
@@ -911,14 +811,14 @@ if __name__ == '__main__':
         for line in file:
             code += line
         parser.parse(code)
-        gen_obj_code(quadruples)
-        # proc_dir.print_procedure_directory()
-        # proc_dir.print_var_tables()
-        #print_quadruples()
+        obj.gen_obj_code(quadruples,proc_dir.procedures,proc_dir.const_table)
+        #proc_dir.print_procedure_directory()
+        #proc_dir.print_var_tables()
+        # obj.print_quadruples(quadruples)
         # stack.print_all_stacks()
         # print(proc_dir.const_table)
 
         v = VM()
         v.execute()
     except EOFError:
-        raise SyntaxError('Error')
+        raise SyntaxError('EOF Error')

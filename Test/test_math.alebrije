@@ -2,13 +2,14 @@ program MyRlike;
 
 main(){
     vars {
-        int: i,arr[10],x[10];
+        int: i,arr[10],x[10],exp[10];
         bool: D,E;
         float: G;
     }
     i = 0;
     while(i<10){
         x[i] = i+1;
+        exp[i] = 2^(i+1);
          if (i != 5){
             arr[i] = (i+1)*2;
         }
@@ -23,5 +24,5 @@ main(){
     write("varaince: ",variance(arr),"\n");
 
     plotxy(x,x);
-    regression(x,x);
+    regression(x,exp);
 }

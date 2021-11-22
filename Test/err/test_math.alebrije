@@ -1,0 +1,14 @@
+program MyRlike; 
+
+    // testing varaible dataype mismatch
+
+
+main(){
+    vars {
+        int: array[20],i;
+        
+    }
+    array[0]=1;
+    i = max(array);
+
+}

@@ -21,7 +21,6 @@ class procedure_dir():
         self.curr_datatype = ''
         self.func_call = ''
         self.procedures = {}
-        self.variable_stack = []
         self.curr_arg_k = 0
         self.memory = memory
         self.const_table = {
@@ -32,12 +31,10 @@ class procedure_dir():
             'bool':{}
         }
 
-    '''
-    '''
+
     def get_curr_temp(self) -> int:
-        """updates the current temporal counter,
-        increases the total number of temporals in the 
-        current procedure and returns the temporal
+        """updates the current temporal counter, increases the total 
+        number of temporals in the current procedure and returns the temporal
 
         Returns:
             int: temporal counter
@@ -46,14 +43,30 @@ class procedure_dir():
         self.procedures[self.curr_proc]['temps'] += 1
         return self.curr_temp
 
-    '''
-    '''
+  
     def add_temp(self, datatype:str) -> None:
+        """increments the temporal variable counter for a given fucntion
+
+        Args:
+            datatype (str): temporal datatype
+        """
         self.procedures[self.curr_proc]['size']['temp'][datatype] += 1
 
-    '''
-    '''
-    def gen_temp(self, operator:str, operand1:str, operand2:str) -> str:
+
+    def gen_temp(self, operator:str, operand1:str, operand2:str) -> int:
+        """generates a temporal variable
+
+        Args:
+            operator (str): operator
+            operand1 (str): left operand
+            operand2 (str): right operand
+
+        Raises:
+            TypeError: Value mismatch
+
+        Returns:
+            int: address
+        """
         try:
             var1 = self.get_addr_datatype(operand1)
             var2 = self.get_addr_datatype(operand2)
@@ -86,24 +99,38 @@ class procedure_dir():
             self.add_variable(addr, temp_datatype, addr, 'temp')
             return addr
         except:
-            print(operand1,operand2)
-            raise TypeError('undefined variable')
+            #print(operand1,operand2,var1,var2,operator)
+            msg = "Error while trying operation: {0} {1} {2}".format(var1,operator,var2)
+            raise TypeError(msg)
 
-    def gen_ptr(self)->int:
+    def gen_ptr(self) -> int:
+        """generates a new pointer
+
+        Returns:
+            int: pointer
+        """
         addr = self.memory['ptr']['curr_addr']
         self.memory['ptr']['curr_addr'] += 1
         return addr
-    '''
-    '''
-    def reset_local_and_temp(self) -> None:
-        for datatype in self.memory['temp']['curr_addr']:
-            self.memory['temp']['curr_addr'][datatype] = self.memory['temp']['init_addr'][datatype]
-            self.memory['local']['curr_addr'][datatype] = self.memory['local']['init_addr'][datatype]
+    
 
-    '''
-    '''    
+    def reset_local_and_temp(self) -> None:
+        """resets local and temporal addresses 
+        back to their original starting address
+        """
+        for datatype in self.memory['temp']['curr_addr']:
+            temp_init = self.memory['temp']['init_addr'][datatype]
+            local_init = self.memory['local']['init_addr'][datatype]
+            self.memory['temp']['curr_addr'][datatype] = temp_init
+            self.memory['local']['curr_addr'][datatype] = local_init
+
+ 
     def get_curr_quadruple(self) -> int:
-        
+        """increments quadruples and returns value
+
+        Returns:
+            int: quadruple id
+        """
         self.curr_quadruple += 1
         return self.curr_quadruple
 
@@ -129,10 +156,29 @@ class procedure_dir():
         return datatype
 
     def get_proc_datatype(self, proc_name:str)->str:
-        datatype = self.procedures[proc_name]['datatype']
+        """returns the datatype of a given procedure
+
+        Args:
+            proc_name (str): name of procedure
+
+        Returns:
+            str: procedure datatype
+        """
+        datatype = self.procedures[proc_name].get('datatype')
         return datatype
 
-    def get_func_return_addr(self,func_name:str ='') -> int:
+    def get_func_return_addr(self, func_name:str ='') -> int:
+        """retursn the global address of a function for handling function returns
+
+        Args:
+            func_name (str, optional): name of the function. Defaults to ''.
+
+        Raises:
+            TypeError: void function has a return
+
+        Returns:
+            int: fucntion return global address
+        """
         if func_name == '':
             func_name = self.curr_proc
         else:
@@ -144,8 +190,8 @@ class procedure_dir():
         proc_datatype = proc['datatype']
 
         if proc_datatype == 'void':
-            return None
-            raise TypeError('void dosent return a value')
+            #return None
+            raise TypeError('void functions should not return a value')
         func = self.func_call
         if func == '':
             func = self.curr_proc
@@ -155,8 +201,9 @@ class procedure_dir():
         
 
     def print_procedure_directory(self) -> None:
-        """Prints the procedure directory in console"""
-        header = ['name', 'datatype','quad range','#param','local+param','#temps','li','lf','lb','lc','ls','ti','tf','tb','tc','ts']
+        """Prints the procedure directory in console
+        """
+        header = ['name', 'datatype','quad start','#param','local+param','#temps','li','lf','lb','lc','ls','ti','tf','tb','tc','ts']
         data = []
         
         for proc in self.procedures:
@@ -164,7 +211,7 @@ class procedure_dir():
             datatype = self.procedures[proc]['datatype']
             if datatype != 'void':
                 global_var = 1
-            quad_range = self.procedures[proc]['quad_range']
+            quad_start = self.procedures[proc]['quad_start']
             params = len(self.procedures[proc]['param_vector'])
             variables = len(self.procedures[proc]['var_table']) - global_var
             temps = self.procedures[proc]['temps']
@@ -183,14 +230,15 @@ class procedure_dir():
             tc = self.procedures[proc]['size']['temp']['char']
             ts = self.procedures[proc]['size']['temp']['string']
 
-            res = [proc, datatype, quad_range, params, variables, temps]
-            res += [li, lf, lb, lc, ls, ti, tf, tb, tc, ts] #size 
+            res = [proc, datatype, quad_start, params, variables, temps]
+            res += [li, lf, lb, lc, ls, ti, tf, tb, tc, ts]
             data.append(res)
         print('\n',' '*16,'PROCEDURE DIRECTORY')
         print(tabulate(data, headers=header, tablefmt='fancy_grid'),'\n')
 
     def print_var_tables(self) -> None:
-        """Prints the varaible table in console"""
+        """Prints the varaible table in the console
+        """
         header = ['Name', 'Datatype', 'Scope','Belongs to','Address','Dim']
         data = []
         procs = self.procedures
@@ -204,7 +252,6 @@ class procedure_dir():
         for datatype in self.const_table:
             for const in self.const_table[datatype]:
                 data.append([const, datatype, 'const', 'const',self.const_table[datatype][const]])
-                #print(const)
         print(' '*15,'VARIABLE TABLE')
         print(tabulate(data, headers=header, tablefmt='fancy_grid'),'\n')
 
@@ -213,17 +260,27 @@ class procedure_dir():
         if dim != None:
             return dim
 
-    '''
-    This function is used to collect varibales(name, datatype, scope) in a
-    stack that gets emptied when a new procedure is added to the object
-    '''    
+   
     def add_variable(self, var_name:str, datatype:str = '', addr:int = -1, scope:str = 'local', dim:int = None):
+        """adds a variable to the variable table of a function
+
+        Args:
+            var_name (str): name of the
+            datatype (str, optional): datatype of the varaible. Defaults to ''.
+            addr (int, optional): address of the variable. Defaults to -1.
+            scope (str, optional): scope of the variable. Defaults to 'local'.
+            dim (int, optional): dimension of array. Defaults to None.
+
+        Raises:
+            ValueError: a global variable with that same name exists
+            ValueError: another variable already has that name
+        """
         if datatype == '':
             datatype = self.curr_datatype
-        if self.exist_global_var(var_name):
-            raise ValueError('Error a global variable with that name alredy exists')
+        if self.procedures['program']['var_table'].get(var_name) != None:
+            raise ValueError('A global variable with that name already exists')
         if self.procedures[self.curr_proc]['var_table'].get(var_name) != None:
-            msg = f'Error repeated variable name:{var_name} in {self.curr_proc}'
+            msg = f'Repeated variable name:{var_name} in {self.curr_proc}'
             raise ValueError(msg)
         [scope] = ['global' if self.curr_proc == 'program' else scope]
         if addr == -1:
@@ -243,25 +300,40 @@ class procedure_dir():
             self.procedures[self.curr_proc]['size'][scope][datatype] += 1
 
     def add_const(self, var_name:str, datatype:str) -> int:
+        """adds a constant varaible, and returns its address in case a 
+        constant already existed its not added and its address is returned
+
+        Args:
+            var_name (str): variable name
+            datatype (str): datatype
+
+        Returns:
+            int: address
+        """
         if datatype == 'string' or datatype == 'char':
             var_name = var_name[1:-1]
         if self.const_table[datatype].get(var_name) == None:
             addr = self.memory['const']['curr_addr'][datatype]
             self.memory['const']['curr_addr'][datatype] += 1
             self.const_table[datatype].update({var_name:addr})
-            #self.const_table[datatype].update({addr:var_name})
             return int(addr)
         else:
             return self.const_table[datatype].get(var_name)
 
-    '''
-    This function adds a new procedure to the procedure directory
-    the size is # of vars per type and temporals per type (temp i, temp f)
-    '''
-    def add_procedure(self, proc_name:str, proc_datatype:str):
-        # Test for existing procedures
-        if self.exist_proc(proc_name):
-            raise ValueError('Error that procedure with that name already exists')
+
+    def add_procedure(self, proc_name:str, proc_datatype:str) -> None:
+        """This function adds a new procedure to the procedure directory
+
+        Args:
+            proc_name (str): procedure name
+            proc_datatype (str): procedure datatype
+
+        Raises:
+            ValueError: duplicate procedure
+        """
+        if self.procedures.get(proc_name) != None:
+            msg = f'A procedure with the name "{proc_name}" already exists'
+            raise ValueError(msg)
         self.procedures[proc_name] = {
             'datatype':proc_datatype,
             'size': {
@@ -280,7 +352,7 @@ class procedure_dir():
                     'string':0
                 }
             },
-            'quad_range':(None,None),
+            'quad_start':None,
             'param_vector':[],
             'var_table':{},
             'temps':0
@@ -304,7 +376,7 @@ class procedure_dir():
         self.curr_arg_k += 1
         return self.curr_arg_k
 
-    def get_param_num(self, func_name:str) -> int:
+    def get_param_len(self, func_name:str) -> int:
         """returns the lenght of the parameter vector of a function
 
         Args:
@@ -315,9 +387,7 @@ class procedure_dir():
         """
         return len(self.procedures[func_name]['param_vector'])
     
-    '''
-    Adds a param datatype to the current procedure
-    '''
+
     def add_param(self, param_name:str, datatype:str) -> None:
         """ Adds a parameter to the parameter vector of a function
         and to its variable table
@@ -330,50 +400,15 @@ class procedure_dir():
         self.add_variable(param_name, datatype)
 
 
-    '''
-    Sets the start of a quadruple to a given integer
-    '''
     def set_quad_start(self, quad_start:int) -> None:
-        self.procedures[self.curr_proc]['quad_range'] = (quad_start,None)
+        """Sets the start of a function to a given integer
 
-    '''
-    Sets the start of a quadruple to a given integer
-    '''
-    def set_quad_end(self, quad_end:int) -> None:
-        (start,_) = self.procedures[self.curr_proc]['quad_range'] 
-        self.procedures[self.curr_proc]['quad_range'] = (start, quad_end)
+        Args:
+            quad_start (int): the quadruple number where the function starts
+        """
+        self.procedures[self.curr_proc]['quad_start'] = quad_start
 
-    '''
-    '''
-    def exist_proc(self, proc_name):
-        try:
-            return self.procedures[proc_name]
-        except:
-            return False
 
-    '''
-    '''
-    def exist_local_var(self, proc_name, var_name):
-        try:
-            if self.procedures[proc_name]['var_table'][var_name]:
-                return True 
-        except:
-            return False
-
-    '''
-    '''
-    def is_cte(self, var) -> (bool,str):
-        res = 'int'
-        for x in range(len(var)):
-            if var[x] == '.' and res != 'float':
-                res = 'float'
-            if not var[x] in ['0','1','2','3','4','5','6','7','8','9']:
-                return False,_
-        return True, res
-
-        
-    '''
-    '''
     def get_addr_datatype(self, addr:int) -> str:
         """returns the datatype for a given address
 
@@ -395,10 +430,23 @@ class procedure_dir():
                 return 'char'
             elif base in [5000,10000,15000,20000]:
                 return 'string'
+            else:
+                'ptr'
         except:
-            return 'ERROR'
+            raise MemoryError('Address has no datatype')
 
     def get_var_addr(self, var_name:str) -> int:
+        """retuns the address of a given variable
+
+        Args:
+            var_name (str): name of the variable
+
+        Raises:
+            NameError: non existant variable
+
+        Returns:
+            int: address
+        """
         proc = self.curr_proc
         try:
             val = self.procedures['program']['var_table'].get(var_name)
@@ -409,10 +457,21 @@ class procedure_dir():
                 return val['address']
 
         except:
-            msg = f'A variable with the name "{var_name}" does not exist'
+            msg = f'A variable with the name "{var_name}" doesn`t exist'
             raise NameError(msg)
 
     def get_var_dim(self, var_name:str) -> int:
+        """returns dimension of an array
+
+        Args:
+            var_name (str): variable/array name
+
+        Raises:
+            MemoryError: No dimensions found for the array
+
+        Returns:
+            int: array dimension
+        """
         try:
             res = self.procedures['program']['var_table'].get(var_name)
             if res != None:
@@ -420,41 +479,9 @@ class procedure_dir():
             res = self.procedures[self.curr_proc]['var_table'].get(var_name)
             if res != None:
                 return res['dim']
-
         except:
-            msg = f'A variable with the name "{var_name}" does not exist'
-            raise NameError(msg)
-    '''
-    '''
-    def exist_global_var(self, var_name):
-        try:
-            if self.procedure['program']['var_table'].get(var_name):
-                return True
-        except:
-            return False
-
-    '''
-    '''
-    def search_var(self, proc_name:str, var_name:str):
-        if not self.search_proc(proc_name):
-            return 'Error there is no procedure with that name'
-        if self.exist_local_var(proc_name, var_name):
-            return self.procedures[proc_name]['var_table'][var_name]
-        elif self.exist_global_var(var_name):
-            return self.procedures['program']['var_table'][var_name]
-        else:
-            msg = "Error variable '{0}' isn't associated with procedure '{1}'"
-            return msg.format(var_name,proc_name)
-
-    '''
-    '''
-    def search_proc(self, proc_name:str):
-        if self.exist_proc(proc_name):
-            return self.procedures[proc_name]
-        else:
-            msg = "Error there is no procedure with the name:{0}"
-            return msg.format(proc_name)
-
+            msg = f'No dimension was found for the array with name: "{var_name}"'
+            raise MemoryError(msg)
 
 if __name__ == '__main__':
     pass

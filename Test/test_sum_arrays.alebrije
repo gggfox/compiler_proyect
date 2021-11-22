@@ -1,0 +1,28 @@
+program MyRlike; 
+
+vars{
+    int: A[20],B[20],C[20];
+}
+
+function void sum_arrays(){
+    vars{
+        int: i;
+    }
+
+    for i=0 to len(C) - 1{
+        C[i] = A[i] + B[i];
+        write(C[i],",");
+    }
+    write("\n");
+}
+    
+main(){
+    vars{
+        int: i;
+    }
+    for i=0 to len(A) - 1{
+        A[i] = i;
+        B[i] = i*2;
+    }
+    sum_arrays();
+}

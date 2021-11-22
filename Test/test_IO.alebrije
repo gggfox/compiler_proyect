@@ -14,5 +14,5 @@ main(){
     write(A,B,C);
     w = 'hello' + ' world';
     write(w,"\n");
-    write(A,"hello", B, " world",C*6);
+    write(A,"hello\n", B, " world",C*6);
 }

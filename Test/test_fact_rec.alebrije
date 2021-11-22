@@ -1,13 +1,10 @@
 program MyRlike;
 
 function int fact(int: num){
-    //write(num,"\n");
     if(num <= 1){
-        //write("true","\n");
         return(1);
     }
     num = num * fact(num - 1);
-    //write("return: ",num,"\n");
     return(num);
 }
 

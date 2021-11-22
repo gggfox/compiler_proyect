@@ -1,6 +1,5 @@
 import json
 import statistics
-from memory_architecture import memory
 import matplotlib.pyplot as plt
 from scipy import stats
 
@@ -16,6 +15,7 @@ class VM:
         self.temp = [{}]
         self.const = {}
         self.pointer = {}
+
 
     def add_const_var_to_ram(self, json_object):
         """adds consts to the constant dictionary
@@ -38,14 +38,16 @@ class VM:
        
 
     def add_global_var_to_ram(self, json_object):
-        """adds global variables to memory
+        """adds global variables to memory with None value
+        this is so it can be assigned a value later though the save function
 
         Args:
             json_object: dictionary with procedure directory, quadruples and constant table
         """
-        variables = json_object['proc_dir']['program'].get('var_table')
-        for key, value in enumerate(variables):
-            self.glob[variables[value]['address']] = None
+        global_variables = json_object['proc_dir']['program'].get('var_table')
+        for key, value in enumerate(global_variables):
+            self.glob[global_variables[value]['address']] = None
+            
 
     def input_type(self, addr: int):
         """handles the READ operation
@@ -59,22 +61,36 @@ class VM:
         Returns:
             [type]: the input value, its type depends on the address
         """
-        base = addr - (addr % 1000)
-        if base == 6000:
-            res = int(input())
-        elif base == 7000:
-            res = float(input())
-        elif base == 8000:
-            res = bool(input())
-        elif res == 9000:
-            res = input()
-            if len(res) > 1:
-                raise ValueError('CHAR datatypes longer than expected')
-        else:
-            res = input()
-        return res
+        try:
+            base = addr - (addr % 1000)
+            value = input('>')
+            if base == 6000:
+                value = int(value)
+            elif base == 7000:
+                value = float(value)
+            elif base == 8000:
+                value = bool(value)
+            elif value == 9000:
+                value = str(value)
+                if len(value) > 1:
+                    raise ValueError('CHAR datatypes can`t be longer than 1 character')
+            else:
+                value = str(value)
+            return value
+        except:
+            datatype = self.get_addr_type(addr=addr)
+            msg = "Can't assign {0} to datatype {1}".format(value,datatype)
+            raise TypeError(msg)
 
     def get_addr_type(self, addr:int) -> str:
+        """returns datatype of a given address
+
+        Args:
+            addr (int): address
+
+        Returns:
+            str: datatype
+        """
         base = addr - (addr % 1000)
         if base in [1000,6000,11000,16000]:
             return 'int'
@@ -114,7 +130,6 @@ class VM:
             return True
 
     def is_pointer(self, addr: int) -> bool:
-        
         if type(addr) != int:
             return False
         if addr >= 21000:
@@ -135,47 +150,65 @@ class VM:
             msg = 'index "{0}" of array is out of bounds'.format(left)
             raise ValueError(msg)
 
-    def check_datatype(self,datatype,sol):
-        dt = type(sol)
+    def check_datatype(self, datatype:str ,value) -> None:
+        """verifies that datatypes int, float and bool 
+        aren't reciving chars or strings
+
+        Args:
+            datatype (str): datatype
+            value ([type]): value that should be of the given datatype
+
+        Raises:
+            TypeError: If a string/char is assiged to a bool/int/float
+        """
+        dt = type(value)
         if datatype in ['int','float','bool'] and dt == str:
             msg = "char and string values can't be assigned to {0}".format(datatype)
             raise TypeError(msg)
+
+    def is_None(self,oper, left,right):
+        lvalue = self.get_mem(left)
+        rvalue = self.get_mem(right)
+        if lvalue == None or rvalue == None:
+            print(oper,lvalue,rvalue)
+            raise ValueError("A variable is missing a value")
                     
-    def clean_datatype(self, addr:int, sol):
+    def clean_datatype(self, addr:int, value):
         
-        if addr >= 21000 or sol == None:
-            return sol
+        if addr >= 21000 or value == None:
+            return value
         datatype = self.get_addr_type(addr)
-        self.check_datatype(datatype, sol)
+        self.check_datatype(datatype, value)
         try:
-            if datatype == 'int' and type(sol) in [int,float,bool]:
-                sol = int(sol)
+            if datatype == 'int' and type(value) in [int,float,bool]:
+                value = int(value)
                 datatype = int
             elif datatype == 'float':
-                sol = float(sol)
+                value = float(value)
                 datatype = float
             elif datatype == 'bool':
-                sol = bool(sol)
+                value = bool(value)
                 datatype = bool
             elif datatype == 'char':
-                sol = str(sol)
-                if len(sol) > 1:
-                    sol = sol[0]
+                value = str(value)
+                if len(value) > 1:
+                    value = value[0]
                 datatype = str
             elif datatype == 'string':
-                sol = str(sol)
+                value = str(value)
                 datatype = str
             else:
+                msg = f"Could not assign {value} to datatype {datatype}"
                 raise TypeError("cant be assigned")
-            if type(sol) != datatype:
-                msg = "value '{0}' isn't of type {1}".format(sol,str(datatype))
+            if type(value) != datatype:
+                msg = f"Value '{0}' isn't of type {1}".format(value,str(datatype))
                 raise TypeError(msg)
-            return sol
+            return value
         except:
-            msg = "value '{0}' can't be assigned to a {1}".format(sol,datatype)
+            msg = "value '{0}' can't be assigned to a {1}".format(value,datatype)
             ValueError(msg)
     
-    def save(self, addr: int, sol) -> None:
+    def save(self, addr: int, value) -> None:
         """saves a value in a memory address
 
         Args:
@@ -185,16 +218,16 @@ class VM:
         if type(addr) != int or addr < 1000:
             return addr
 
-        sol = self.clean_datatype(addr,sol)
+        value = self.clean_datatype(addr,value)
       
         if self.is_glob(addr):
-            self.glob[addr] = sol
+            self.glob[addr] = value
         elif self.is_local(addr):
-            self.local[self.era][addr] = sol
+            self.local[self.era][addr] = value
         elif self.is_temp(addr):
-            self.temp[self.era][addr] = sol
+            self.temp[self.era][addr] = value
         elif self.is_pointer(addr):
-            self.pointer[addr] = sol
+            self.pointer[addr] = value
 
     def get_mem(self, addr: int):
         """returns the value of a memory address
@@ -234,8 +267,6 @@ class VM:
         Returns:
             [int]: returns an array of numbers  
         """
-        #print(baseAddr,size)
-        #print(self.local)
         arr = []
         i = 0
         while(i < size):
@@ -244,7 +275,17 @@ class VM:
             i += 1
         return arr
 
-    def run_quads(self, json_object):
+    def run_quads(self, json_object) -> None:
+        """Execures the quadruples
+
+        Args:
+            json_object ([type]): sructure containing the 
+            procedure directroy, quadruples and constant table
+
+        Raises:
+            TypeError: [description]
+            TypeError: [description]
+        """
         
         proc_dir = json_object['proc_dir']
 
@@ -266,7 +307,7 @@ class VM:
             if self.is_pointer(right):
                 right = self.get_mem(right)
 
-            print(oper, left, right, res)
+            #print(oper, left, right, res)
             #print(self.pointer)
             # print(self.get_mem(left))
             #print(self.glob)
@@ -286,7 +327,7 @@ class VM:
                     print(end='\t')
                 else:
                     print(disp,end='')
-
+            
             elif oper == 'READ':
                 addr = quad['res']
                 solution = self.input_type(addr)
@@ -298,10 +339,8 @@ class VM:
                 quad = json_object['quads'][str(ip)]
                 left, right, res = quad['left'], quad['right'], quad['res']
                 solution = self.get_mem(right) + left
-                #print(res,left,right,solution)
                 self.save(res, solution)
 
-            # ERA necesia borrar memoria
             elif oper == 'ERA':
                 self.curr_func = res
                 self.era += 1
@@ -324,7 +363,7 @@ class VM:
 
             elif oper == 'GOSUB':
                 if self.era == len(self.gosub)+1:
-                    ip = proc_dir[left]['quad_range'][0]
+                    ip = proc_dir[left]['quad_start']
                     self.gosub.append(res)
                     continue
 
@@ -337,7 +376,6 @@ class VM:
                 self.era -= 1
                 del self.local[-1]
                 del self.temp[-1]
-                #print(self.gosub)
                 ip = self.gosub.pop()
                 continue
             elif oper == 'ENDFUNC':
@@ -348,7 +386,6 @@ class VM:
                 continue
             elif oper == 'MAX':
                 arr = self.get_array(baseAddr=left, size=right)
-                print(arr)
                 solution = float(max(arr))
                 self.save(res, solution)
             elif oper == 'MIN':
@@ -400,45 +437,61 @@ class VM:
                 plt.show()
                 pass
             elif oper == '==':
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) == self.get_mem(right)
                 self.save(res, solution)
             elif oper == '!=':
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) != self.get_mem(right)
                 self.save(res, solution)
             elif oper == '>=':
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) >= self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '<=':
+            elif oper == '<=':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) <= self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '>':
+            elif oper == '>':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) > self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '<':
+            elif oper == '<':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) < self.get_mem(right)
                 self.save(res, solution)
-            elif oper == 'and':
+            elif oper == 'and':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) and self.get_mem(right)
                 self.save(res, solution)
-            elif oper == 'or':
+            elif oper == 'or':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) or self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '%':
+            elif oper == '%':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) % self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '^':
+            elif oper == '^':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) ** self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '*':
+            elif oper == '*':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) * self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '/':
+            elif oper == '/':                
+                self.is_None(oper,left,right)
+                if self.get_mem(right) == 0:
+                    raise ValueError("Can't divide by zero")
                 solution = self.get_mem(left) / self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '+':
+            elif oper == '+':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) + self.get_mem(right)
                 self.save(res, solution)
-            elif oper == '-':
+            elif oper == '-':                
+                self.is_None(oper,left,right)
                 solution = self.get_mem(left) - self.get_mem(right)
                 self.save(res, solution)
             elif oper == '=':

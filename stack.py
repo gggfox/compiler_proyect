@@ -5,14 +5,10 @@ class Stack:
         self.operators = []
         self.datatypes = []
         self.jumps = []
-        self.arr_dim = []
 
-    '''
-    returns the item on top of the stack, 
-    aka the last operator to be added into the stack
-    '''
+
     def top(self, stack:list):
-        """retursn the top element of a given list
+        """returns the top element of a given stack/list
 
         Args:
             stack (list): a general stack
@@ -24,14 +20,6 @@ class Stack:
             return stack[len(stack) - 1]
         return 'Stack length is 0'
 
-
-    def top_operator_priority(self) -> int:
-        """returns the priority of the operator in top of the operator stack
-
-        Returns:
-            int: priority
-        """
-        return self.priority(self.top(self.operators))
 
     def priority(self, op:str) -> int:
         """reutns the priority of an operator
@@ -62,12 +50,6 @@ class Stack:
         lvl = self.operators.count('(') + 1
         return val * lvl
 
-    def top_isnt_lpar(self) -> bool:
-        """
-         return true if the top of the list of operators isn`t a right parenthesis
-        """
-        res = self.top(self.operators) != '('
-        return res
 
     def get_RL_operands(self) -> (str,str):
         """pops the right and left operands out of the operand stack

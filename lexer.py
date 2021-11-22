@@ -30,6 +30,8 @@ reserved = {
     'for' : 'FOR',
     'to' : 'TO',
     'void' : 'VOID',
+    'and' : 'AND',
+    'or' : 'OR',
     'median' : 'MEDIAN',
     'mode' : 'MODE',
     'mean' : 'MEAN',
@@ -38,9 +40,7 @@ reserved = {
     'plotxy' : 'PLOTXY',
     'max' : 'MAX',
     'min' : 'MIN',
-    'and' : 'AND',
-    'or' : 'OR',
-    'len':'LEN'
+    'len':'LEN',
 }
 
 
@@ -156,7 +156,8 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print('Illegal character "{0}"'.format(t.value[0]))
+    msg = 'Illegal character "{0}"'.format(t.value[0])
+    raise ValueError(msg)
     t.lexer.skip(1)
 
 
