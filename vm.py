@@ -488,12 +488,20 @@ class VM:
                 self.save(res, solution)
             elif oper == '+':                
                 self.is_None(oper,left,right)
-                solution = self.get_mem(left) + self.get_mem(right)
-                self.save(res, solution)
+                try:
+                    solution = self.get_mem(left) + self.get_mem(right)
+                    self.save(res, solution)
+                except:
+                    msg = f"Can't + {self.get_mem(left)} and {self.get_mem(right)}"
+                    raise ValueError(msg)
             elif oper == '-':                
                 self.is_None(oper,left,right)
-                solution = self.get_mem(left) - self.get_mem(right)
-                self.save(res, solution)
+                try:
+                    solution = self.get_mem(left) - self.get_mem(right)
+                    self.save(res, solution)
+                except:
+                    msg = f"Can't - {self.get_mem(left)} and {self.get_mem(right)}"
+                    raise ValueError(msg)
             elif oper == '=':
                 solution = self.get_mem(left)
                 self.save(res, solution)

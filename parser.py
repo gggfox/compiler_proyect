@@ -280,8 +280,8 @@ def p_exponent(p):
 def p_factor(p):
     '''
     factor : L_PAR np_push_operator expression R_PAR np_rpar
-        | MINUS var_cte
-        | var_cte 
+        | var_cte
+        
     '''
 
 def p_var_cte(p):

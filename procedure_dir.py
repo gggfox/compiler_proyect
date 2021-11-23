@@ -72,26 +72,8 @@ class procedure_dir():
             var2 = self.get_addr_datatype(operand2)
 
 
-            # Catch cte ints and floats
-            if var1 == 'ERROR':
-                [_,var1,_] = str(type(operand1)).split('\'')
-            if var2 == 'ERROR':
-                [_,var2,_] = str(type(operand2)).split('\'')
-
-            if var1 in ["string","char"] and var2 in ["int","float","bool"]:
-                operand2 = str(operand2)
-                var2 = var1
-
-            if var2 in ["string","char"] and var1 in ["int","float","bool"]:
-                operand1 = str(operand1)
-                var1 = var2
-
-            # print(operand1,operand2)
-            # print(operator,var1,var2)
-            #self.print_var_tables()
             #print(operator,var1,var2,operand1,operand2)
             temp_datatype = SemanticCube[operator][var1][var2]
-            #print(temp_datatype,var1,var2)
             self.add_temp(temp_datatype)    
             temp = 'temp'+str(self.get_curr_temp())   
             addr = self.memory['temp']['curr_addr'][temp_datatype]
@@ -99,9 +81,9 @@ class procedure_dir():
             self.add_variable(addr, temp_datatype, addr, 'temp')
             return addr
         except:
-            #print(operand1,operand2,var1,var2,operator)
             msg = "Error while trying operation: {0} {1} {2}".format(var1,operator,var2)
             raise TypeError(msg)
+
 
     def gen_ptr(self) -> int:
         """generates a new pointer

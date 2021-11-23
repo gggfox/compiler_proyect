@@ -122,16 +122,16 @@
                     "address": 10000,
                     "dim": 0
                 },
-                "15000": {
-                    "datatype": "string",
-                    "scope": "temp",
-                    "address": 15000,
-                    "dim": null
-                },
                 "11000": {
                     "datatype": "int",
                     "scope": "temp",
                     "address": 11000,
+                    "dim": null
+                },
+                "15000": {
+                    "datatype": "string",
+                    "scope": "temp",
+                    "address": 15000,
                     "dim": null
                 }
             },
@@ -164,88 +164,88 @@
             "res": 6001
         },
         "4": {
-            "oper": "READ",
-            "left": null,
-            "right": null,
-            "res": 6002
+            "oper": "-",
+            "left": 16001,
+            "right": 16002,
+            "res": 11000
         },
         "5": {
-            "oper": "WRITE",
-            "left": null,
+            "oper": "=",
+            "left": 11000,
             "right": null,
-            "res": 6000
+            "res": 6002
         },
         "6": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 6001
+            "res": 6000
         },
         "7": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 6002
+            "res": 6001
         },
         "8": {
-            "oper": "+",
-            "left": 20000,
-            "right": 20001,
-            "res": 15000
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6002
         },
         "9": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20000
+        },
+        "10": {
+            "oper": "+",
+            "left": 20001,
+            "right": 20002,
+            "res": 15000
+        },
+        "11": {
             "oper": "=",
             "left": 15000,
             "right": null,
             "res": 10000
         },
-        "10": {
+        "12": {
             "oper": "WRITE",
             "left": null,
             "right": null,
             "res": 10000
         },
-        "11": {
-            "oper": "WRITE",
-            "left": null,
-            "right": null,
-            "res": 20002
-        },
-        "12": {
-            "oper": "WRITE",
-            "left": null,
-            "right": null,
-            "res": 6000
-        },
         "13": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 20003
+            "res": 20000
         },
         "14": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 6001
+            "res": 6000
         },
         "15": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 20001
+            "res": 20003
         },
         "16": {
-            "oper": "*",
-            "left": 6002,
-            "right": 16001,
-            "res": 11000
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6001
         },
         "17": {
             "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 11000
+            "res": 20002
         },
         "18": {
             "oper": "ENDPROG",
@@ -257,14 +257,15 @@
     "const_table": {
         "int": {
             "0": 16000,
-            "6": 16001
+            "1": 16001,
+            "6": 16002
         },
         "float": {},
         "char": {},
         "string": {
-            "hello": 20000,
-            " world": 20001,
-            "\\n": 20002,
+            "\\n": 20000,
+            "hello": 20001,
+            " world": 20002,
             "hello\\n": 20003
         },
         "bool": {}
