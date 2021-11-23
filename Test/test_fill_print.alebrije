@@ -1,0 +1,30 @@
+program MyRlike;
+vars{
+    int: array[12],w;
+}
+
+function void fill(){
+    vars{
+        int: x;
+    }
+    for x=0 to w{
+        array[x] = x*2;
+    }
+    write("finish fill","\n");
+}
+
+function void print(){
+    vars{
+        int: x;
+    }
+    fill();
+    for x=0 to w{
+        write(array[x],"\n");
+    }
+    write("finish print","\n");
+}
+
+main(){
+    w = 11;
+   print();  
+}

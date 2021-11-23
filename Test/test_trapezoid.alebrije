@@ -1,0 +1,37 @@
+program MyRlike; 
+
+function float f(float: x){
+    //0.7853 with limit lower= 0 and upper = 1
+    return( 1/(1 + x^2));
+}
+
+function float trapezoid(float: x0, float: xn, int: n){
+  vars{
+      int: i,k;
+      float: h, integration;
+  }
+  
+  h = (xn - x0) / n;
+
+  integration = f(x0) + f(xn);
+
+  for i = 1 to n - 1{
+      k = x0 + i*h;
+      integration = integration + 2 * f(k);
+  }
+  integration = integration * h/2;
+  return(integration);
+}
+
+main(){
+    vars{ 
+        int: sub_interval;
+        float: llim,ulim,res;
+    }
+    read(llim);
+    read(ulim);
+    read(sub_interval);
+    
+    res = trapezoid(llim, ulim, sub_interval);
+    write(res);
+}

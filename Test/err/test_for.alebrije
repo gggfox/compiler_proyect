@@ -1,0 +1,15 @@
+program MyRlike; 
+
+    // testing varaible dataype mismatch
+
+
+main(){
+    vars {
+        int: array[20],i;
+        
+    }
+    for i = true to "20"{
+        write(i,"\n");
+    }
+
+}

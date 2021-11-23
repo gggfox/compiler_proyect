@@ -1,0 +1,19 @@
+program MyRlike; 
+
+function int stuff(){
+
+}
+
+main(){
+    vars {
+        int: A,B,C,D,E,F;
+        float: G;
+        string: w;
+    }
+    read(A,B);
+    C = 1 - 6;
+    write(A,B,C,"\n");
+    w = 'hello' + ' world';
+    write(w,"\n");
+    write(A,"hello\n", B, " world");
+}

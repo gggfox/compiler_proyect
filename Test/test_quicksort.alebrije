@@ -1,0 +1,52 @@
+program MyRlike; 
+vars{ int: array[20];}
+
+function void set_array(){
+    array[0] = 5;   array[1] = 1; array[2] = 9;   array[3] = -3;
+    array[4] = 5;   array[5] = 8; array[6] = 12;  array[7] = -5;
+    array[8] = 44;  array[9] = 3; array[10] = 2;  array[11] = 55;
+    array[12] = -1; array[13] = 0; array[14] = 18; array[15] = 11;
+    array[16] = 7;  array[17] = 100; array[18] = 44; array[19] = 66;
+}
+
+function int partition(int: low, int: high){
+    vars{ int: pivot, aux,j,i; }
+    pivot = array[high];
+    i = (low - 1);
+    for j=low to high{
+        if(array[j] < pivot){
+            i += 1;
+            aux = array[i];
+            array[i] = array[j];
+            array[j] = aux;
+        }
+    }      
+    aux = array[i+1];
+    array[i+1] = array[high];
+    array[high] = aux;
+    return(high);
+}
+
+function void quick_sort(int: start, int: end){
+    vars{ int: p; }
+    if(start < end){
+        p = partition(start,end);    
+        quick_sort(start,p - 1);
+        quick_sort(p + 1, end);
+    }
+}
+  
+function void print_array(){
+    vars{ int: i; }
+    for i = 0 to len(array){
+        write(array[i],",");
+    }
+    write("\n");
+}
+
+main(){
+   set_array();
+   print_array();
+   quick_sort(0,len(array) - 1);
+   print_array();
+}

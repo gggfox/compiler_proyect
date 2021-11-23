@@ -1,0 +1,38 @@
+program MyRlike; 
+
+function int stuff(){
+
+}
+    // existe un error donde se pueden guardar tipos
+    // distintos en cualquier clase
+
+main(){
+    vars {
+        int: A,B,C,F,H;
+        bool: D,E;
+        float: G;
+    }
+    // 17.5
+    A = 5.5 + 6 * (4 - 2);
+    write(A,'\n');
+    // 102 
+    B = 5 * 6 + 8 * 9;
+    write(B,'\n');
+    // 4050
+    C = 5 * (6 * (7 + 8)) * 9;
+    write(C,'\n');
+    // False
+    D = 1+1 == 1;
+    write(D,"\n");
+    // True
+    E = (4 + 3 >= 5) and (5 <= 6);
+    write(E,"\n");
+    //8
+    F = 2 ^ 3;
+    write(F,"\n");   
+    //2
+    H = 12%10;
+    write(H,"\n");
+    A *= 2;
+    A -= 4;
+}

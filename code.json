@@ -1,0 +1,273 @@
+{
+    "proc_dir": {
+        "program": {
+            "datatype": "void",
+            "size": {
+                "local": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                },
+                "temp": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                }
+            },
+            "quad_start": null,
+            "param_vector": [],
+            "var_table": {},
+            "temps": 0
+        },
+        "stuff": {
+            "datatype": "int",
+            "size": {
+                "local": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                },
+                "temp": {
+                    "int": 0,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 0
+                }
+            },
+            "quad_start": 1,
+            "param_vector": [],
+            "var_table": {
+                "stuff": {
+                    "datatype": "int",
+                    "scope": "global",
+                    "address": 1000,
+                    "dim": null
+                }
+            },
+            "temps": 0
+        },
+        "main": {
+            "datatype": "void",
+            "size": {
+                "local": {
+                    "int": 6,
+                    "float": 1,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 1
+                },
+                "temp": {
+                    "int": 2,
+                    "float": 0,
+                    "bool": 0,
+                    "char": 0,
+                    "string": 2
+                }
+            },
+            "quad_start": null,
+            "param_vector": [],
+            "var_table": {
+                "A": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6000,
+                    "dim": 0
+                },
+                "B": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6001,
+                    "dim": 0
+                },
+                "C": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6002,
+                    "dim": 0
+                },
+                "D": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6003,
+                    "dim": 0
+                },
+                "E": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6004,
+                    "dim": 0
+                },
+                "F": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6005,
+                    "dim": 0
+                },
+                "G": {
+                    "datatype": "float",
+                    "scope": "local",
+                    "address": 7000,
+                    "dim": 0
+                },
+                "w": {
+                    "datatype": "string",
+                    "scope": "local",
+                    "address": 10000,
+                    "dim": 0
+                },
+                "11000": {
+                    "datatype": "int",
+                    "scope": "temp",
+                    "address": 11000,
+                    "dim": null
+                },
+                "15000": {
+                    "datatype": "string",
+                    "scope": "temp",
+                    "address": 15000,
+                    "dim": null
+                }
+            },
+            "temps": 2
+        }
+    },
+    "quads": {
+        "0": {
+            "oper": "GOTO",
+            "left": null,
+            "right": null,
+            "res": 2
+        },
+        "1": {
+            "oper": "ENDFUNC",
+            "left": null,
+            "right": null,
+            "res": null
+        },
+        "2": {
+            "oper": "READ",
+            "left": null,
+            "right": null,
+            "res": 6000
+        },
+        "3": {
+            "oper": "READ",
+            "left": null,
+            "right": null,
+            "res": 6001
+        },
+        "4": {
+            "oper": "-",
+            "left": 16001,
+            "right": 16002,
+            "res": 11000
+        },
+        "5": {
+            "oper": "=",
+            "left": 11000,
+            "right": null,
+            "res": 6002
+        },
+        "6": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6000
+        },
+        "7": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6001
+        },
+        "8": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6002
+        },
+        "9": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20000
+        },
+        "10": {
+            "oper": "+",
+            "left": 20001,
+            "right": 20002,
+            "res": 15000
+        },
+        "11": {
+            "oper": "=",
+            "left": 15000,
+            "right": null,
+            "res": 10000
+        },
+        "12": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 10000
+        },
+        "13": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20000
+        },
+        "14": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6000
+        },
+        "15": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20003
+        },
+        "16": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 6001
+        },
+        "17": {
+            "oper": "WRITE",
+            "left": null,
+            "right": null,
+            "res": 20002
+        },
+        "18": {
+            "oper": "ENDPROG",
+            "left": null,
+            "right": null,
+            "res": null
+        }
+    },
+    "const_table": {
+        "int": {
+            "0": 16000,
+            "1": 16001,
+            "6": 16002
+        },
+        "float": {},
+        "char": {},
+        "string": {
+            "\\n": 20000,
+            "hello": 20001,
+            " world": 20002,
+            "hello\\n": 20003
+        },
+        "bool": {}
+    }
+}

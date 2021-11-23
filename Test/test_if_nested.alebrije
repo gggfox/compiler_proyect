@@ -1,0 +1,33 @@
+program MyRlike; 
+
+main(){
+    vars {
+        int: A,B,C,D;
+        float: G;
+    }
+    G = 1.0;
+    A = 1;
+    B = 2;
+    C = 3;
+    D = 4;
+    if(A + B * 10 > C * D){
+        A = B + D;
+        write("IF 1","\n");
+        if(A > B){
+            write("IF 2",33,'\n');
+            G = 5.0;
+        }else{
+            write("ELSE 2",1,"\n");
+            G = 6.6;
+        }
+    }
+    else{
+        write("ELSE 1",22,"\n");
+        A = D - C;
+        G = 12.1;
+    }
+
+    B = A * C + D;
+    write(G,'\n');
+}
+
