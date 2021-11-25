@@ -1,15 +1,10 @@
-# compiler_proyect
-## Avanze de la semana
-Durante esta semana se hicieron pruebas del lenguaje ya se ejecutan 
-las fuciones recursivas y el manejo de arreglos, se trabajo en la primera
-version de la documentacion para la entregua final. Todavia completar toda 
-la documentacion ademas falta el manual de usuario y el video que lo acompaña.
+# Alebrije
 
 ## Video Demo
 - https://www.youtube.com/watch?v=Poa7Y-VB09Y
 ## Ejecutar programa
 ```bash
-python parser.py test_fibonacci.alebrije
+python parser.py Test/test_fibonacci_rec.alebrije
 ```
 
 ## Archivos relevantes:
@@ -60,4 +55,4 @@ python parser.py test_fibonacci.alebrije
 - [X] pruebas
 
 ## Semana #8 (Nov22-Nov24) FINAL
-- [ ] Entregua final del proyecto NOV. 24, 12:00PM
+- [X] Entregua final del proyecto NOV. 24, 12:00PM

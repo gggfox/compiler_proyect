@@ -20,18 +20,11 @@
             },
             "quad_start": null,
             "param_vector": [],
-            "var_table": {
-                "array": {
-                    "datatype": "int",
-                    "scope": "global",
-                    "address": 1000,
-                    "dim": 20
-                }
-            },
+            "var_table": {},
             "temps": 0
         },
-        "set_array": {
-            "datatype": "void",
+        "fact": {
+            "datatype": "int",
             "size": {
                 "local": {
                     "int": 0,
@@ -49,65 +42,20 @@
                 }
             },
             "quad_start": 1,
-            "param_vector": [],
-            "var_table": {},
-            "temps": 0
-        },
-        "bubble_sort": {
-            "datatype": "void",
-            "size": {
-                "local": {
-                    "int": 0,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                },
-                "temp": {
-                    "int": 0,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                }
-            },
-            "quad_start": 62,
-            "param_vector": [],
+            "param_vector": [
+                "int"
+            ],
             "var_table": {
-                "prev": {
+                "fact": {
+                    "datatype": "int",
+                    "scope": "global",
+                    "address": 1000,
+                    "dim": null
+                },
+                "num": {
                     "datatype": "int",
                     "scope": "local",
                     "address": 6000,
-                    "dim": 0
-                },
-                "curr": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6001,
-                    "dim": 0
-                },
-                "aux": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6002,
-                    "dim": 0
-                },
-                "i": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6003,
-                    "dim": 0
-                },
-                "j": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6004,
-                    "dim": 0
-                },
-                "lim": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6005,
                     "dim": 0
                 },
                 "13000": {
@@ -120,90 +68,12 @@
                     "datatype": "int",
                     "scope": "temp",
                     "address": 11000,
-                    "dim": null
-                },
-                "13001": {
-                    "datatype": "bool",
-                    "scope": "temp",
-                    "address": 13001,
-                    "dim": null
-                },
-                "11001": {
-                    "datatype": "int",
-                    "scope": "temp",
-                    "address": 11001,
-                    "dim": null
-                },
-                "13002": {
-                    "datatype": "bool",
-                    "scope": "temp",
-                    "address": 13002,
                     "dim": null
                 },
                 "11002": {
                     "datatype": "int",
                     "scope": "temp",
                     "address": 11002,
-                    "dim": null
-                },
-                "11003": {
-                    "datatype": "int",
-                    "scope": "temp",
-                    "address": 11003,
-                    "dim": null
-                },
-                "11004": {
-                    "datatype": "int",
-                    "scope": "temp",
-                    "address": 11004,
-                    "dim": null
-                },
-                "11005": {
-                    "datatype": "int",
-                    "scope": "temp",
-                    "address": 11005,
-                    "dim": null
-                }
-            },
-            "temps": 0
-        },
-        "print_array": {
-            "datatype": "void",
-            "size": {
-                "local": {
-                    "int": 0,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                },
-                "temp": {
-                    "int": 0,
-                    "float": 0,
-                    "bool": 0,
-                    "char": 0,
-                    "string": 0
-                }
-            },
-            "quad_start": 96,
-            "param_vector": [],
-            "var_table": {
-                "i": {
-                    "datatype": "int",
-                    "scope": "local",
-                    "address": 6000,
-                    "dim": 0
-                },
-                "13000": {
-                    "datatype": "bool",
-                    "scope": "temp",
-                    "address": 13000,
-                    "dim": null
-                },
-                "11000": {
-                    "datatype": "int",
-                    "scope": "temp",
-                    "address": 11000,
                     "dim": null
                 }
             },
@@ -229,7 +99,14 @@
             },
             "quad_start": null,
             "param_vector": [],
-            "var_table": {},
+            "var_table": {
+                "a": {
+                    "datatype": "int",
+                    "scope": "local",
+                    "address": 6000,
+                    "dim": 0
+                }
+            },
             "temps": 0
         }
     },
@@ -238,699 +115,129 @@
             "oper": "GOTO",
             "left": null,
             "right": null,
-            "res": 108
+            "res": 13
         },
         "1": {
-            "oper": "VER",
-            "left": 16001,
-            "right": 16001,
-            "res": 16000
-        },
-        "2": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16001,
-            "res": 21000
-        },
-        "3": {
-            "oper": "=",
-            "left": 16002,
-            "right": null,
-            "res": 21000
-        },
-        "4": {
-            "oper": "VER",
-            "left": 16003,
-            "right": 16001,
-            "res": 16000
-        },
-        "5": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16003,
-            "res": 21001
-        },
-        "6": {
-            "oper": "=",
-            "left": 16003,
-            "right": null,
-            "res": 21001
-        },
-        "7": {
-            "oper": "VER",
-            "left": 16004,
-            "right": 16001,
-            "res": 16000
-        },
-        "8": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16004,
-            "res": 21002
-        },
-        "9": {
-            "oper": "=",
-            "left": 16005,
-            "right": null,
-            "res": 21002
-        },
-        "10": {
-            "oper": "VER",
-            "left": 16006,
-            "right": 16001,
-            "res": 16000
-        },
-        "11": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16006,
-            "res": 21003
-        },
-        "12": {
-            "oper": "=",
-            "left": 16007,
-            "right": null,
-            "res": 21003
-        },
-        "13": {
-            "oper": "VER",
-            "left": 16008,
-            "right": 16001,
-            "res": 16000
-        },
-        "14": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16008,
-            "res": 21004
-        },
-        "15": {
-            "oper": "=",
-            "left": 16002,
-            "right": null,
-            "res": 21004
-        },
-        "16": {
-            "oper": "VER",
-            "left": 16002,
-            "right": 16001,
-            "res": 16000
-        },
-        "17": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16002,
-            "res": 21005
-        },
-        "18": {
-            "oper": "=",
-            "left": 16009,
-            "right": null,
-            "res": 21005
-        },
-        "19": {
-            "oper": "VER",
-            "left": 16010,
-            "right": 16001,
-            "res": 16000
-        },
-        "20": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16010,
-            "res": 21006
-        },
-        "21": {
-            "oper": "=",
-            "left": 16011,
-            "right": null,
-            "res": 21006
-        },
-        "22": {
-            "oper": "VER",
-            "left": 16012,
-            "right": 16001,
-            "res": 16000
-        },
-        "23": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16012,
-            "res": 21007
-        },
-        "24": {
-            "oper": "=",
-            "left": 16013,
-            "right": null,
-            "res": 21007
-        },
-        "25": {
-            "oper": "VER",
-            "left": 16009,
-            "right": 16001,
-            "res": 16000
-        },
-        "26": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16009,
-            "res": 21008
-        },
-        "27": {
-            "oper": "=",
-            "left": 16014,
-            "right": null,
-            "res": 21008
-        },
-        "28": {
-            "oper": "VER",
-            "left": 16005,
-            "right": 16001,
-            "res": 16000
-        },
-        "29": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16005,
-            "res": 21009
-        },
-        "30": {
-            "oper": "=",
-            "left": 16006,
-            "right": null,
-            "res": 21009
-        },
-        "31": {
-            "oper": "VER",
-            "left": 16015,
-            "right": 16001,
-            "res": 16000
-        },
-        "32": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16015,
-            "res": 21010
-        },
-        "33": {
-            "oper": "=",
-            "left": 16004,
-            "right": null,
-            "res": 21010
-        },
-        "34": {
-            "oper": "VER",
-            "left": 16016,
-            "right": 16001,
-            "res": 16000
-        },
-        "35": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16016,
-            "res": 21011
-        },
-        "36": {
-            "oper": "=",
-            "left": 16017,
-            "right": null,
-            "res": 21011
-        },
-        "37": {
-            "oper": "VER",
-            "left": 16011,
-            "right": 16001,
-            "res": 16000
-        },
-        "38": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16011,
-            "res": 21012
-        },
-        "39": {
-            "oper": "=",
-            "left": 16018,
-            "right": null,
-            "res": 21012
-        },
-        "40": {
-            "oper": "VER",
-            "left": 16019,
-            "right": 16001,
-            "res": 16000
-        },
-        "41": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16019,
-            "res": 21013
-        },
-        "42": {
-            "oper": "=",
-            "left": 16001,
-            "right": null,
-            "res": 21013
-        },
-        "43": {
-            "oper": "VER",
-            "left": 16020,
-            "right": 16001,
-            "res": 16000
-        },
-        "44": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16020,
-            "res": 21014
-        },
-        "45": {
-            "oper": "=",
-            "left": 16021,
-            "right": null,
-            "res": 21014
-        },
-        "46": {
-            "oper": "VER",
-            "left": 16022,
-            "right": 16001,
-            "res": 16000
-        },
-        "47": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16022,
-            "res": 21015
-        },
-        "48": {
-            "oper": "=",
-            "left": 16016,
-            "right": null,
-            "res": 21015
-        },
-        "49": {
-            "oper": "VER",
-            "left": 16023,
-            "right": 16001,
-            "res": 16000
-        },
-        "50": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16023,
-            "res": 21016
-        },
-        "51": {
-            "oper": "=",
-            "left": 16012,
-            "right": null,
-            "res": 21016
-        },
-        "52": {
-            "oper": "VER",
-            "left": 16024,
-            "right": 16001,
-            "res": 16000
-        },
-        "53": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16024,
-            "res": 21017
-        },
-        "54": {
-            "oper": "=",
-            "left": 16025,
-            "right": null,
-            "res": 21017
-        },
-        "55": {
-            "oper": "VER",
-            "left": 16021,
-            "right": 16001,
-            "res": 16000
-        },
-        "56": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16021,
-            "res": 21018
-        },
-        "57": {
-            "oper": "=",
-            "left": 16014,
-            "right": null,
-            "res": 21018
-        },
-        "58": {
-            "oper": "VER",
-            "left": 16026,
-            "right": 16001,
-            "res": 16000
-        },
-        "59": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 16026,
-            "res": 21019
-        },
-        "60": {
-            "oper": "=",
-            "left": 16027,
-            "right": null,
-            "res": 21019
-        },
-        "61": {
-            "oper": "ENDFUNC",
-            "left": null,
-            "right": null,
-            "res": null
-        },
-        "62": {
-            "oper": "=",
-            "left": 16003,
-            "right": null,
-            "res": 6003
-        },
-        "63": {
             "oper": "<=",
-            "left": 6003,
-            "right": 16000,
+            "left": 6000,
+            "right": 16001,
             "res": 13000
         },
-        "64": {
+        "2": {
             "oper": "GOTOF",
             "left": 13000,
             "right": null,
-            "res": 95
+            "res": 4
         },
-        "65": {
-            "oper": "=",
+        "3": {
+            "oper": "RET",
             "left": 16001,
             "right": null,
-            "res": 6004
+            "res": 1000
         },
-        "66": {
+        "4": {
+            "oper": "ERA",
+            "left": null,
+            "right": null,
+            "res": "fact"
+        },
+        "5": {
             "oper": "-",
-            "left": 16000,
-            "right": 6003,
+            "left": 6000,
+            "right": 16001,
             "res": 11000
         },
-        "67": {
-            "oper": "<",
-            "left": 6004,
-            "right": 11000,
-            "res": 13001
-        },
-        "68": {
-            "oper": "GOTOF",
-            "left": 13001,
+        "6": {
+            "oper": "PARAM",
+            "left": 11000,
             "right": null,
-            "res": 92
+            "res": 1
         },
-        "69": {
-            "oper": "VER",
-            "left": 6004,
-            "right": 16001,
-            "res": 16000
+        "7": {
+            "oper": "GOSUB",
+            "left": "fact",
+            "right": null,
+            "res": 7
         },
-        "70": {
-            "oper": "[+]",
+        "8": {
+            "oper": "=",
             "left": 1000,
-            "right": 6004,
-            "res": 21020
-        },
-        "71": {
-            "oper": "+",
-            "left": 6004,
-            "right": 16003,
+            "right": null,
             "res": 11001
         },
-        "72": {
-            "oper": "VER",
-            "left": 11001,
-            "right": 16001,
-            "res": 16000
-        },
-        "73": {
-            "oper": "[+]",
-            "left": 1000,
+        "9": {
+            "oper": "*",
+            "left": 6000,
             "right": 11001,
-            "res": 21021
-        },
-        "74": {
-            "oper": ">",
-            "left": 21020,
-            "right": 21021,
-            "res": 13002
-        },
-        "75": {
-            "oper": "GOTOF",
-            "left": 13002,
-            "right": null,
-            "res": 89
-        },
-        "76": {
-            "oper": "VER",
-            "left": 6004,
-            "right": 16001,
-            "res": 16000
-        },
-        "77": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 6004,
-            "res": 21022
-        },
-        "78": {
-            "oper": "=",
-            "left": 21022,
-            "right": null,
-            "res": 6002
-        },
-        "79": {
-            "oper": "VER",
-            "left": 6004,
-            "right": 16001,
-            "res": 16000
-        },
-        "80": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 6004,
-            "res": 21023
-        },
-        "81": {
-            "oper": "+",
-            "left": 6004,
-            "right": 16003,
             "res": 11002
         },
-        "82": {
-            "oper": "VER",
+        "10": {
+            "oper": "=",
             "left": 11002,
-            "right": 16001,
-            "res": 16000
-        },
-        "83": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 11002,
-            "res": 21024
-        },
-        "84": {
-            "oper": "=",
-            "left": 21024,
-            "right": null,
-            "res": 21023
-        },
-        "85": {
-            "oper": "+",
-            "left": 6004,
-            "right": 16003,
-            "res": 11003
-        },
-        "86": {
-            "oper": "VER",
-            "left": 11003,
-            "right": 16001,
-            "res": 16000
-        },
-        "87": {
-            "oper": "[+]",
-            "left": 1000,
-            "right": 11003,
-            "res": 21025
-        },
-        "88": {
-            "oper": "=",
-            "left": 6002,
-            "right": null,
-            "res": 21025
-        },
-        "89": {
-            "oper": "+",
-            "left": 6004,
-            "right": 16003,
-            "res": 11004
-        },
-        "90": {
-            "oper": "=",
-            "left": 11004,
-            "right": null,
-            "res": 6004
-        },
-        "91": {
-            "oper": "GOTO",
-            "left": null,
-            "right": null,
-            "res": 66
-        },
-        "92": {
-            "oper": "+",
-            "left": 6003,
-            "right": 16003,
-            "res": 11005
-        },
-        "93": {
-            "oper": "=",
-            "left": 11005,
-            "right": null,
-            "res": 6003
-        },
-        "94": {
-            "oper": "GOTO",
-            "left": null,
-            "right": null,
-            "res": 63
-        },
-        "95": {
-            "oper": "ENDFUNC",
-            "left": null,
-            "right": null,
-            "res": null
-        },
-        "96": {
-            "oper": "=",
-            "left": 16001,
             "right": null,
             "res": 6000
         },
-        "97": {
-            "oper": "<",
+        "11": {
+            "oper": "RET",
             "left": 6000,
-            "right": 16000,
-            "res": 13000
-        },
-        "98": {
-            "oper": "GOTOF",
-            "left": 13000,
             "right": null,
-            "res": 106
+            "res": 1000
         },
-        "99": {
-            "oper": "VER",
+        "12": {
+            "oper": "ENDFUNC",
+            "left": null,
+            "right": null,
+            "res": null
+        },
+        "13": {
+            "oper": "READ",
+            "left": null,
+            "right": null,
+            "res": 6000
+        },
+        "14": {
+            "oper": "ERA",
+            "left": null,
+            "right": null,
+            "res": "fact"
+        },
+        "15": {
+            "oper": "PARAM",
             "left": 6000,
-            "right": 16001,
-            "res": 16000
+            "right": null,
+            "res": 1
         },
-        "100": {
-            "oper": "[+]",
+        "16": {
+            "oper": "GOSUB",
+            "left": "fact",
+            "right": null,
+            "res": 16
+        },
+        "17": {
+            "oper": "=",
             "left": 1000,
-            "right": 6000,
-            "res": 21026
-        },
-        "101": {
-            "oper": "WRITE",
-            "left": null,
             "right": null,
-            "res": 21026
-        },
-        "102": {
-            "oper": "WRITE",
-            "left": null,
-            "right": null,
-            "res": 19000
-        },
-        "103": {
-            "oper": "+",
-            "left": 6000,
-            "right": 16003,
             "res": 11000
         },
-        "104": {
+        "18": {
             "oper": "=",
             "left": 11000,
             "right": null,
             "res": 6000
         },
-        "105": {
-            "oper": "GOTO",
+        "19": {
+            "oper": "WRITE",
             "left": null,
             "right": null,
-            "res": 97
+            "res": 6000
         },
-        "106": {
+        "20": {
             "oper": "WRITE",
             "left": null,
             "right": null,
             "res": 20000
         },
-        "107": {
-            "oper": "ENDFUNC",
-            "left": null,
-            "right": null,
-            "res": null
-        },
-        "108": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "set_array"
-        },
-        "109": {
-            "oper": "GOSUB",
-            "left": "set_array",
-            "right": null,
-            "res": 109
-        },
-        "110": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "print_array"
-        },
-        "111": {
-            "oper": "GOSUB",
-            "left": "print_array",
-            "right": null,
-            "res": 111
-        },
-        "112": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "bubble_sort"
-        },
-        "113": {
-            "oper": "GOSUB",
-            "left": "bubble_sort",
-            "right": null,
-            "res": 113
-        },
-        "114": {
-            "oper": "ERA",
-            "left": null,
-            "right": null,
-            "res": "print_array"
-        },
-        "115": {
-            "oper": "GOSUB",
-            "left": "print_array",
-            "right": null,
-            "res": 115
-        },
-        "116": {
+        "21": {
             "oper": "ENDPROG",
             "left": null,
             "right": null,
@@ -939,39 +246,11 @@
     },
     "const_table": {
         "int": {
-            "20": 16000,
-            "0": 16001,
-            "5": 16002,
-            "1": 16003,
-            "2": 16004,
-            "9": 16005,
-            "3": 16006,
-            "-3": 16007,
-            "4": 16008,
-            "8": 16009,
-            "6": 16010,
-            "12": 16011,
-            "7": 16012,
-            "-5": 16013,
-            "44": 16014,
-            "10": 16015,
-            "11": 16016,
-            "55": 16017,
-            "-1": 16018,
-            "13": 16019,
-            "14": 16020,
-            "18": 16021,
-            "15": 16022,
-            "16": 16023,
-            "17": 16024,
-            "100": 16025,
-            "19": 16026,
-            "66": 16027
+            "0": 16000,
+            "1": 16001
         },
         "float": {},
-        "char": {
-            ",": 19000
-        },
+        "char": {},
         "string": {
             "\\n": 20000
         },
