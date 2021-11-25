@@ -12,6 +12,7 @@ main(){
     vars{
         int: a;
     }
-    a = fact(2+3);
+    read(a);
+    a = fact(a);
     write(a,"\n");    
 }

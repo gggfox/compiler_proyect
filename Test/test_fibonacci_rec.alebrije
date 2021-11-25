@@ -1,0 +1,24 @@
+program MyRlike;
+
+function int fib(int: n){
+    vars{
+        int: a,b;
+    }
+   
+    if(n < 2){
+        return(n);
+    }else{ 
+        return(fib(n - 1) + fib(n - 2));
+    }
+}
+
+main(){
+    vars{
+        int: a,b;
+    }
+    read(b);
+    for a = 1 to b+1{
+        write(fib(a), ",");
+    }
+      
+}

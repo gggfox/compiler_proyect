@@ -213,7 +213,6 @@ def p_def_func(p):
               | MEDIAN
               | MODE
               | VARIANCE
-              | LEN
     '''
     p[0] = p[1]
 
@@ -626,7 +625,6 @@ def p_np_GOTO_FOR(p):
     var = stack.operands.pop()
     addr = proc_dir.add_const(var_name=1, datatype='int')
     temp = proc_dir.gen_temp('+', addr, var)
-    proc_dir.add_temp('int')
     quadruples.append(('+', addr, var, temp))
     quadruples.append(('=', temp, None, var))
 
@@ -684,7 +682,6 @@ def p_np_GOSUB(p):
         proc_dir.memory['temp']['curr_addr'][datatype] += 1
         addr = proc_dir.get_func_return_addr(func_name)
         quadruples.append(('=', addr, None, temp))
-        proc_dir.add_temp(datatype)
         stack.operands.append(temp)
 
 

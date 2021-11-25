@@ -40,7 +40,6 @@ reserved = {
     'plotxy' : 'PLOTXY',
     'max' : 'MAX',
     'min' : 'MIN',
-    'len':'LEN',
 }
 
 

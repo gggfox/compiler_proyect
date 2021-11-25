@@ -43,15 +43,6 @@ class procedure_dir():
         self.procedures[self.curr_proc]['temps'] += 1
         return self.curr_temp
 
-  
-    def add_temp(self, datatype:str) -> None:
-        """increments the temporal variable counter for a given fucntion
-
-        Args:
-            datatype (str): temporal datatype
-        """
-        self.procedures[self.curr_proc]['size']['temp'][datatype] += 1
-
 
     def gen_temp(self, operator:str, operand1:str, operand2:str) -> int:
         """generates a temporal variable
@@ -68,20 +59,18 @@ class procedure_dir():
             int: address
         """
         try:
+            #print(operator,operand1,operand2)
             var1 = self.get_addr_datatype(operand1)
             var2 = self.get_addr_datatype(operand2)
 
-
             #print(operator,var1,var2,operand1,operand2)
-            temp_datatype = SemanticCube[operator][var1][var2]
-            self.add_temp(temp_datatype)    
-            temp = 'temp'+str(self.get_curr_temp())   
+            temp_datatype = SemanticCube[operator][var1][var2]  
             addr = self.memory['temp']['curr_addr'][temp_datatype]
             self.memory['temp']['curr_addr'][temp_datatype] += 1
             self.add_variable(addr, temp_datatype, addr, 'temp')
             return addr
         except:
-            msg = "Error while trying operation: {0} {1} {2}".format(var1,operator,var2)
+            msg = "Error while trying operation: {0} {1} {2}".format(operand2,operator,operand1)
             raise TypeError(msg)
 
 
@@ -185,7 +174,7 @@ class procedure_dir():
     def print_procedure_directory(self) -> None:
         """Prints the procedure directory in console
         """
-        header = ['name', 'datatype','quad start','#param','local+param','#temps','li','lf','lb','lc','ls','ti','tf','tb','tc','ts']
+        header = ['name', 'datatype','quad start','#param','local+param','#temps']
         data = []
         
         for proc in self.procedures:
@@ -198,22 +187,9 @@ class procedure_dir():
             variables = len(self.procedures[proc]['var_table']) - global_var
             temps = self.procedures[proc]['temps']
 
-            # local ints, floats, bools, chars, strings
-            li = self.procedures[proc]['size']['local']['int']
-            lf = self.procedures[proc]['size']['local']['float']
-            lb = self.procedures[proc]['size']['local']['bool']
-            lc = self.procedures[proc]['size']['local']['char']
-            ls = self.procedures[proc]['size']['local']['string']
-            
-            # temporal ints, floats, bools, chars, strings
-            ti = self.procedures[proc]['size']['temp']['int']
-            tf = self.procedures[proc]['size']['temp']['float']
-            tb = self.procedures[proc]['size']['temp']['bool']
-            tc = self.procedures[proc]['size']['temp']['char']
-            ts = self.procedures[proc]['size']['temp']['string']
+    
 
             res = [proc, datatype, quad_start, params, variables, temps]
-            res += [li, lf, lb, lc, ls, ti, tf, tb, tc, ts]
             data.append(res)
         print('\n',' '*16,'PROCEDURE DIRECTORY')
         print(tabulate(data, headers=header, tablefmt='fancy_grid'),'\n')
@@ -278,8 +254,6 @@ class procedure_dir():
             'dim': dim
         }
         self.procedures[self.curr_proc]['var_table'][var_name] = data
-        if scope != 'global':
-            self.procedures[self.curr_proc]['size'][scope][datatype] += 1
 
     def add_const(self, var_name:str, datatype:str) -> int:
         """adds a constant varaible, and returns its address in case a 
@@ -431,16 +405,15 @@ class procedure_dir():
         """
         proc = self.curr_proc
         try:
-            val = self.procedures['program']['var_table'].get(var_name)
-            if  val != None:
-                return val['address']
-            val = self.procedures[proc]['var_table'].get(var_name)
-            if  val != None:
-                return val['address']
-
+            val = self.procedures['program']['var_table'][var_name]
+            return val['address']
         except:
-            msg = f'A variable with the name "{var_name}" doesn`t exist'
-            raise NameError(msg)
+            try:
+                val = self.procedures[proc]['var_table'][var_name]
+                return val['address']
+            except:
+                msg = f'A variable with the name "{var_name}" doesn`t exist'
+                raise NameError(msg)
 
     def get_var_dim(self, var_name:str) -> int:
         """returns dimension of an array

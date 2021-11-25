@@ -408,8 +408,6 @@ class VM:
                 arr = self.get_array(baseAddr=left, size=right)
                 solution = float(round(statistics.variance(arr), 4))
                 self.save(res, solution)
-            elif oper == 'LEN':
-                self.save(res, right)
             elif oper == 'PLOTXY':
                 arr1 = self.get_array(baseAddr=left, size=right)
                 ip += 1

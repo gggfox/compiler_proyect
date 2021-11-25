@@ -38,7 +38,7 @@ function void quick_sort(int: start, int: end){
   
 function void print_array(){
     vars{ int: i; }
-    for i = 0 to len(array){
+    for i = 0 to 20{
         write(array[i],",");
     }
     write("\n");
@@ -47,6 +47,6 @@ function void print_array(){
 main(){
    set_array();
    print_array();
-   quick_sort(0,len(array) - 1);
+   quick_sort(0,19);
    print_array();
 }
