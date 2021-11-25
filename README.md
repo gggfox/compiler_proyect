@@ -2,6 +2,11 @@
 
 ## Video Demo
 - https://www.youtube.com/watch?v=Poa7Y-VB09Y
+
+## Bibiotecas de Python
+```python
+pip install scipy numpy statistics ply matplotlib tabulate
+```
 ## Ejecutar programa
 ```bash
 python parser.py Test/test_fibonacci_rec.alebrije
